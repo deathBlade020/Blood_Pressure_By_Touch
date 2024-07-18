@@ -162,8 +162,8 @@ def find_lasi(ppg, fs):
 
 def plot_scatter(data, peaks, close = False):
     plt.plot(data)
-    
     plt.scatter(peaks, [data[i] for i in peaks], c='red')
+    
     if close:
         plt.show(block=False)
         plt.pause(2)
@@ -523,6 +523,9 @@ def denormalize(val, max_bp, min_bp):
     return math.floor(denormalized_bp)
 
 
+    # return math.ceil(val)
+
+
 
 
 
@@ -714,7 +717,7 @@ def write_well(DATA,filename,single):
                         file.write(str(item) + ",")
                 file.write(",\n")
             file.write("}\n")
-        print(f"weights written in {filename}")
+        print(f"[Regressor] weights written in {filename}")
     else:
         with open(filename, 'w') as file:
             file.write("{")
@@ -725,7 +728,7 @@ def write_well(DATA,filename,single):
                 else:
                     file.write(str(item) + ",")
             file.write("}")
-        print(f"bias written in {filename}")
+        print(f"[Regressor] bias written in {filename}")
 
         
 
@@ -813,7 +816,7 @@ def train_nn(features,blood_pressure_data,max_bp,min_bp,selected_features):
     model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.1, verbose=1)
 
     loss = model.evaluate(X_test, y_test, verbose=1)
-    print(f'Best model test loss: {loss}')
+    print(f'[Regressor] Best model test loss: {loss}')
     y_pred = model.predict(X_test)
 
     good = 0
@@ -832,17 +835,17 @@ def train_nn(features,blood_pressure_data,max_bp,min_bp,selected_features):
     save.sort(key = lambda x: x[0])
 
     for a,b,diff in save:
-        print(f"Actual : {a}, Predicted: {b}, Difference: {diff}")
+        print(f"[Regressor] Actual : {a}, Predicted: {b}, Difference: {diff}")
 
     print("\n")
     ic(selected_features)
     total_pass = round((good/total) * 100, 2)
-    print(f"Train size: {X_train.shape[0]}, test size: {X_test.shape[0]}")
-    print(f"Best test case pass percentage: {total_pass} @ {tol}")
+    print(f"[Regressor] Train size: {X_train.shape[0]}, test size: {X_test.shape[0]}")
+    print(f"[Regressor] Best test case pass percentage: {total_pass} @ {tol}")
 
     model.save('nn_regressor_130_175_running.keras')
 
-    print("nn_regressor is saved")
+    print("[Regressor] nn_regressor is saved")
     for i, layer in enumerate(model.layers):
         weights, biases = layer.get_weights()
         write_well(weights, f'model_weights/layer{i+1}_weights.txt', 0)
@@ -1160,6 +1163,6 @@ def prepare():
 
 
 
-prepare()
+# prepare()
 
 # print_column_labels()
