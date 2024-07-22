@@ -14,89 +14,51 @@ int find_signal_peaks(double *signal, int signal_len, int peaks[], int is_ecg)
     int store[500] = {0};
     int store_index = 0;
     int peak_distance = 10;
-
-    if (is_ecg)
-    {
-        // amplitude_tolerance = 15;
-        // for (int i = 0; i < signal_len; i++)
-        // {
-        //     printf("index: %d, value: %f\n", i, signal[i]);
-        // }
-        // nl;
-        // nl;
-    }
-
+    int low = 0, high = 0, max_index = -1, turn = 1;
+    double max_val = -1;
     for (int i = 0; i < signal_len; i++)
     {
-        if (signal[i] >= (is_ecg ? 22 : 5))
+        if (signal[i] < 0)
         {
-            store[store_index++] = i;
+            high = i;
+            break;
         }
     }
-    if (is_ecg)
+    double add = 0;
+    for (int i = 0; i < signal_len; i++)
     {
-
-        peaks[num_peaks++] = store[0];
-        for (int i = 1; i < store_index; i++)
+        if (signal[i] >= 1)
         {
-            if (abs(peaks[num_peaks - 1] - store[i]) >= peak_distance)
+            add += signal[i];
+        }
+    }
+    add /= signal_len;
+    printf("is ecg: %d, add: %f\n", is_ecg, add);
+    while (high < signal_len)
+    {
+        if (signal[high])
+        {
+            if (signal[high] >= 25 && signal[high] > max_val)
             {
-                // printf("peak: %d, value: %f\n", store[i], signal[store[i]]);
-                int curr_peak = store[i];
-                while (curr_peak + 1 < signal_len && signal[curr_peak] < signal[curr_peak + 1])
-                {
-                    curr_peak++;
-                }
-                peaks[num_peaks++] = curr_peak;
+                max_val = signal[high];
+                max_index = high;
             }
         }
-
-        return num_peaks;
-    }
-
-    int CLASS_SIZE = 100;
-    if (!is_ecg)
-    {
-        CLASS_SIZE = 10;
-    }
-
-    int MAX_CLASS = signal_len / CLASS_SIZE;
-
-    double max_val[MAX_CLASS];
-    int max_peaks[MAX_CLASS];
-
-    for (int i = 0; i < MAX_CLASS; i++)
-    {
-        max_val[i] = -1.0;
-        max_peaks[i] = -1;
-    }
-
-    for (int i = 0; i < store_index; i++)
-    {
-        int peak = store[i];
-        int class = ((peak - CLASS_SIZE) / CLASS_SIZE);
-        if (class < 0 || class >= MAX_CLASS)
+        else
         {
-            continue;
+            // peaks[num_peaks++] = max_index;
+            store[store_index++] = max_index;
+            max_index = -1;
+            max_val = -1;
         }
-        double amplitude_value = signal[peak];
-        if (amplitude_value > max_val[class])
-        {
-            max_val[class] = amplitude_value;
-            max_peaks[class] = peak;
-        }
+        high++;
     }
-    peaks[num_peaks++] = max_peaks[0];
-    for (int i = 1; i < MAX_CLASS; i++)
+    peaks[num_peaks++] = store[0];
+    for (int i = 1; i < store_index; i++)
     {
-        if (max_peaks[i] != -1 && abs(peaks[num_peaks - 1] - max_peaks[i]) >= peak_distance)
+        if (abs(peaks[num_peaks - 1] - store[i]) >= peak_distance)
         {
-            int curr_peak = max_peaks[i];
-            while (curr_peak + 1 < signal_len && signal[curr_peak] < signal[curr_peak + 1])
-            {
-                curr_peak++;
-            }
-            peaks[num_peaks++] = curr_peak;
+            peaks[num_peaks++] = store[i];
         }
     }
 
@@ -346,8 +308,8 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
     calculate_derivative(ecg_signal, diff_ecg_signal, ecg_len);
     calculate_derivative(ppg_signal, diff_ppg_signal, ppg_len);
 
-    *num_r_peaks = find_signal_peaks(diff_ecg_signal, ecg_len - 1, r_peaks, 1);
-    *num_systolic_peaks = find_signal_peaks(diff_ppg_signal, ppg_len - 1, systolic_peaks, 0);
+    *num_r_peaks = find_signal_peaks(ecg_signal, ecg_len, r_peaks, 1);
+    *num_systolic_peaks = find_signal_peaks(ppg_signal, ppg_len, systolic_peaks, 0);
 
     double sum_ptt = 0.0;
     int valid_pairs = 0;
