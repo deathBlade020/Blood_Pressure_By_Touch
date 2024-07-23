@@ -3,19 +3,137 @@
 #include <math.h>
 #include <stdint.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_PEAKS 1000
 #define nl printf("\n")
+static void filter(const double b[5], const double a[5], const double x[174], const double zi[4], double y[174]);
+static void filtfilt(const double x_in[150], double y_out[150]);
 
-int find_signal_peaks(double *signal, int signal_len, int peaks[], int is_ecg)
+static void filter(const double b[5], const double a[5], const double x[174], const double zi[4], double y[174])
 {
+    int k;
+    int naxpy;
+    int j;
+    double as;
+    for (k = 0; k < 4; k++)
+    {
+        y[k] = zi[k];
+    }
+
+    memset(&y[4], 0, 170U * sizeof(double));
+    for (k = 0; k < 174; k++)
+    {
+        naxpy = 174 - k;
+        if (!(naxpy < 5))
+        {
+            naxpy = 5;
+        }
+
+        for (j = 0; j + 1 <= naxpy; j++)
+        {
+            y[k + j] += x[k] * b[j];
+        }
+
+        naxpy = 173 - k;
+        if (!(naxpy < 4))
+        {
+            naxpy = 4;
+        }
+
+        as = -y[k];
+        for (j = 1; j <= naxpy; j++)
+        {
+            y[k + j] += as * a[j];
+        }
+    }
+}
+
+static void filtfilt(const double x_in[150], double y_out[150])
+{
+    double xtmp;
+    double d1;
+    int i;
+    double y[174];
+    double b_y[174];
+    double a[4];
+    static const double b_a[4] = {-0.19377359529033994, -0.1937735952902776,
+                                  0.19377359529029725, 0.19377359529031876};
+
+    static const double dv1[5] = {0.19377359529031332, 0.0, -0.38754719058062664,
+                                  0.0, 0.19377359529031332};
+
+    static const double dv2[5] = {1.0, -2.342095632660552, 1.9477115412319015,
+                                  -0.80784671655553675, 0.20433295072565855};
+
+    xtmp = 2.0 * x_in[0];
+    d1 = 2.0 * x_in[149];
+    for (i = 0; i < 12; i++)
+    {
+        y[i] = xtmp - x_in[12 - i];
+    }
+
+    memcpy(&y[12], &x_in[0], 150U * sizeof(double));
+    for (i = 0; i < 12; i++)
+    {
+        y[i + 162] = d1 - x_in[148 - i];
+    }
+
+    for (i = 0; i < 4; i++)
+    {
+        a[i] = b_a[i] * y[0];
+    }
+
+    memcpy(&b_y[0], &y[0], 174U * sizeof(double));
+    filter(dv1, dv2, b_y, a, y);
+    for (i = 0; i < 87; i++)
+    {
+        xtmp = y[i];
+        y[i] = y[173 - i];
+        y[173 - i] = xtmp;
+    }
+
+    for (i = 0; i < 4; i++)
+    {
+        a[i] = b_a[i] * y[0];
+    }
+
+    memcpy(&b_y[0], &y[0], 174U * sizeof(double));
+    filter(dv1, dv2, b_y, a, y);
+    for (i = 0; i < 87; i++)
+    {
+        xtmp = y[i];
+        y[i] = y[173 - i];
+        y[173 - i] = xtmp;
+    }
+
+    memcpy(&y_out[0], &y[12], 150U * sizeof(double));
+}
+
+int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, double ppg_mean, double ecg_mean)
+{
+
+    double filtered_signal[150];
+    filtfilt(signal, filtered_signal);
 
     int num_peaks = 0, amplitude_tolerance = 5;
     int store[500] = {0};
     int store_index = 0;
-    int peak_distance = 10;
+    int peak_distance = 30;
     int low = 0, high = 0, max_index = -1, turn = 1;
     double max_val = -1;
+    if (is_ecg)
+    {
+        // for (int i = 0; i < signal_len; i++)
+        // {
+        //     printf("index: %d,value: %f\n", i, signal[i]);
+        // }
+        // nl;
+        // nl;
+        // nl;
+        // nl;
+    }
+
     for (int i = 0; i < signal_len; i++)
     {
         if (signal[i] < 0)
@@ -24,21 +142,13 @@ int find_signal_peaks(double *signal, int signal_len, int peaks[], int is_ecg)
             break;
         }
     }
-    double add = 0;
-    for (int i = 0; i < signal_len; i++)
-    {
-        if (signal[i] >= 1)
-        {
-            add += signal[i];
-        }
-    }
-    add /= signal_len;
-    printf("is ecg: %d, add: %f\n", is_ecg, add);
+    // printf("is_ecg: %d, ppg_mean: %f, ecg_mean: %f\n", is_ecg, ppg_mean, ecg_mean);
+    double amp_tol = is_ecg ? ecg_mean : ppg_mean + 0.2;
     while (high < signal_len)
     {
         if (signal[high])
         {
-            if (signal[high] >= 25 && signal[high] > max_val)
+            if (signal[high] >= amp_tol && signal[high] > max_val)
             {
                 max_val = signal[high];
                 max_index = high;
@@ -294,6 +404,8 @@ double find_ptt(double ppg_signal_1[], double ppg_signal_2[], int n, int *peak1,
 double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int ppg_len, int r_peaks[], int systolic_peaks[], int *num_r_peaks, int *num_systolic_peaks)
 {
 
+    double ecg_mean = 0.0, ppg_mean = 0.0;
+
     // good for find_signal_peaks, IG
     double fs_ecg = 192.0;
     double fs_ppg = 26.0;
@@ -308,26 +420,40 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
     calculate_derivative(ecg_signal, diff_ecg_signal, ecg_len);
     calculate_derivative(ppg_signal, diff_ppg_signal, ppg_len);
 
-    *num_r_peaks = find_signal_peaks(ecg_signal, ecg_len, r_peaks, 1);
-    *num_systolic_peaks = find_signal_peaks(ppg_signal, ppg_len, systolic_peaks, 0);
+    for (int i = 0; i < ecg_len - 1; i++)
+    {
+        if (diff_ecg_signal[i] >= 1)
+        {
+            ecg_mean += diff_ecg_signal[i];
+        }
+    }
+    ecg_mean /= ecg_len;
+
+    for (int i = 0; i < ppg_len - 1; i++)
+    {
+        if (diff_ppg_signal[i] >= 1)
+        {
+            ppg_mean += diff_ppg_signal[i];
+        }
+    }
+    ppg_mean /= ppg_len;
+
+    *num_r_peaks = find_signal_peaks(diff_ecg_signal, ecg_len - 1, r_peaks, 1, ppg_mean, ecg_mean);
+    *num_systolic_peaks = find_signal_peaks(diff_ppg_signal, ppg_len - 1, systolic_peaks, 0, ppg_mean, ecg_mean);
+
+    // *num_r_peaks = ampd(diff_ecg_signal, ecg_len - 1, r_peaks, 1);
+    // *num_systolic_peaks = ampd(diff_ppg_signal, ppg_len - 1, systolic_peaks, 0);
 
     double sum_ptt = 0.0;
     int valid_pairs = 0;
-    int tol = 100;
+    int tol = 60;
     int num_class = ecg_len / 100;
 
     for (int i = 0; i < *num_r_peaks && i < *num_systolic_peaks; i++)
     {
         int r_peak_index = r_peaks[i];
         int systolic_peak_index = systolic_peaks[i];
-        if (r_peak_index < systolic_peak_index)
-        {
-            r_peak_index += tol;
-        }
-        else
-        {
-            systolic_peak_index += tol;
-        }
+
         // int class_r = (r_peak_index / 100) * 100;
         // int class_s = (systolic_peak_index / 100) * 100;
 
@@ -343,7 +469,6 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
         double time_r_peak = (double)r_peak_index / fs_ecg;
         double time_systolic_peak = (double)systolic_peak_index / fs_ppg;
 
-        // double ptt = (fabs(time_r_peak - time_systolic_peak));
         double ptt = fabs((double)(r_peak_index - systolic_peak_index)) / fs_ppg;
         sum_ptt += ptt;
         valid_pairs++;
