@@ -148,9 +148,8 @@ int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, 
         ecg_mean /= div;
         // printf("ecg mean: %f\n", ecg_mean);
         // int window_size = 40;
-        int window_size = 50;
-
-        for (int i = 0; i < signal_len; i += window_size)
+        int window_size = 50, skip_right = 6, end_tol = 15;
+        for (int i = 0; i < signal_len;)
         {
             int start = i, end = i + window_size;
             if (start >= signal_len || end >= signal_len)
@@ -167,7 +166,38 @@ int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, 
                     max_index = j;
                 }
             }
-            store[store_index++] = max_index;
+            if (max_index != -1)
+            {
+
+                int q_peak = max_index;
+                while (q_peak >= 1 && signal[q_peak] >= signal[q_peak - 1])
+                {
+                    q_peak--;
+                }
+                int s_peak = max_index;
+                // this will find the s peak
+                while (s_peak + 1 < end + end_tol && signal[s_peak] >= signal[s_peak + 1])
+                {
+                    s_peak++;
+                }
+                double r_to_q = (signal[max_index] - signal[q_peak]);
+                double r_to_s = (signal[max_index] - signal[s_peak]);
+
+                if (max_index >= 1 && max_index + 1 < signal_len && signal[max_index - 1] < signal[max_index] && signal[max_index] > signal[max_index + 1] && r_to_q >= 40 && r_to_s >= 45)
+                {
+                    store[store_index++] = max_index; // rpeak here
+                    // printf("rpeak: %d\n", max_index);
+                    // printf("rpeak: %d, diff1: %f, diff2: %f\n", max_index, r_to_q, r_to_s);
+                }
+
+                // printf("qpeak: %f, rpeak: %f, speak: %f\n", signal[q_peak], signal[max_index], signal[s_peak]);
+                i = s_peak + skip_right;
+            }
+            else
+            {
+                i++;
+            }
+
             // peaks[num_peaks++] = max_index;
         }
         peaks[num_peaks++] = store[0];
@@ -205,7 +235,7 @@ int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, 
             }
 
             // valid foot checking
-            if (signal[peak_index - 3] > signal[peak_index] && signal[peak_index] < signal[peak_index + 3])
+            if (signal[peak_index - left] > signal[peak_index] && signal[peak_index] < signal[peak_index + left])
             {
                 store[store_index++] = peak_index; // foot here
                 peaks[num_peaks++] = peak_index;
@@ -221,37 +251,6 @@ int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, 
                 peak_index++;
             }
             i = peak_index;
-            // printf("foot: %d, value: %f\n", peak_index, signal[peak_index]);
-            // while (peak_index + 1 < signal_len && signal[peak_index] == signal[peak_index + 1])
-            // {
-            //     peak_index++;
-            // }
-            // int new_peak_index = peak_index + 3;
-            // int tmp = new_peak_index;
-            // while (1)
-            // {
-            //     if (new_peak_index + 1 >= signal_len)
-            //     {
-            //         break;
-            //     }
-            //     else if (signal[new_peak_index] < signal[new_peak_index - 1] && signal[new_peak_index] < signal[new_peak_index + 1])
-            //     {
-            //         peak_index = new_peak_index;
-            //         break;
-            //     }
-            //     else
-            //     {
-            //         new_peak_index++;
-            //     }
-            // }
-            // if (tmp != new_peak_index)
-            // {
-            //     i = peak_index;
-            // }
-            // else
-            // {
-            //     i = peak_index + 8;
-            // }
         }
     }
     return num_peaks;
@@ -531,87 +530,95 @@ int min_peak(int a, int b)
 double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int ppg_len, int r_peaks[], int systolic_peaks[], int *num_r_peaks, int *num_systolic_peaks, double ecg_filt[], double ppg_filt[], int bp)
 {
 
-    int ecg_signal_changed = 0;
-    double changed_ecg_signal[150];
-    for (int i = 0; i < 150; i++)
-    {
-        changed_ecg_signal[i] = 0.0;
-    }
+    // int ecg_signal_changed = 0;
+    // double changed_ecg_signal[150];
+    // for (int i = 0; i < 150; i++)
+    // {
+    //     changed_ecg_signal[i] = 0.0;
+    // }
 
-    if (ecg_len < 150)
-    {
-        // printf("[PTT] ecg signal length is less than 150, so changing\n");
-        ecg_signal_changed = 1;
-        double put = ecg_signal[ecg_len - 1];
-        for (int i = 0; i < ecg_len; i++)
-        {
-            changed_ecg_signal[i] = ecg_signal[i];
-        }
-        for (int i = ecg_len; i < 150; i++)
-        {
-            changed_ecg_signal[i] = put;
-        }
-        ecg_signal_changed = 1;
-    }
-    double mother_ecg_signal[ecg_len];
+    // if (ecg_len < 150)
+    // {
+    //     // printf("[PTT] ecg signal length is less than 150, so changing\n");
+    //     ecg_signal_changed = 1;
+    //     double put = ecg_signal[ecg_len - 1];
+    //     for (int i = 0; i < ecg_len; i++)
+    //     {
+    //         changed_ecg_signal[i] = ecg_signal[i];
+    //     }
+    //     for (int i = ecg_len; i < 150; i++)
+    //     {
+    //         changed_ecg_signal[i] = put;
+    //     }
+    //     ecg_signal_changed = 1;
+    // }
+    // double mother_ecg_signal[ecg_len];
+    // for (int i = 0; i < ecg_len; i++)
+    // {
+    //     mother_ecg_signal[i] = 0.0;
+    // }
+    // if (ecg_signal_changed)
+    // {
+    //     filter_here(changed_ecg_signal, ecg_len, mother_ecg_signal, 1);
+    // }
+    // else
+    // {
+    //     filter_here(ecg_signal, ecg_len, mother_ecg_signal, 1);
+    // }
+
+    // // for (int i = 0; i < ecg_len; i++)
+    // // {
+    // //     printf("%d,%f\n", i, mother_ecg_signal[i]);
+    // // }
+
+    // double changed_ppg_signal[150];
+    // int ppg_signal_changed = 0;
+    // for (int i = 0; i < 150; i++)
+    // {
+    //     changed_ppg_signal[i] = 0.0;
+    // }
+
+    // if (ppg_len < 150)
+    // {
+    //     // printf("[PTT] ppg signal length is less than 150, so changing\n");
+    //     ppg_signal_changed = 1;
+    //     for (int i = 0; i < ppg_len; i++)
+    //     {
+    //         changed_ppg_signal[i] = ppg_signal[i];
+    //     }
+    //     double put = ppg_signal[ppg_len - 1];
+    //     for (int i = ppg_len; i < 150; i++)
+    //     {
+    //         changed_ppg_signal[i] = put;
+    //     }
+    //     ppg_len = 150;
+    // }
+
+    // double mother_ppg_signal[ppg_len];
+    // for (int i = 0; i < ppg_len; i++)
+    // {
+    //     mother_ppg_signal[i] = 0.0;
+    // }
+
+    // if (ppg_signal_changed)
+    // {
+    //     filter_here(changed_ppg_signal, ppg_len, mother_ppg_signal, 0);
+    // }
+    // else
+    // {
+    //     filter_here(ppg_signal, ppg_len, mother_ppg_signal, 0);
+    // }
+
     for (int i = 0; i < ecg_len; i++)
     {
-        mother_ecg_signal[i] = 0.0;
-    }
-    if (ecg_signal_changed)
-    {
-        filter_here(changed_ecg_signal, ecg_len, mother_ecg_signal, 1);
-    }
-    else
-    {
-        filter_here(ecg_signal, ecg_len, mother_ecg_signal, 1);
+        // ecg_filt[i] = ecg_signal_changed ? mother_ecg_signal[i] : ecg_signal[i];
+        ecg_filt[i] = ecg_signal[i];
     }
 
-    double changed_ppg_signal[150];
-    int ppg_signal_changed = 0;
-    for (int i = 0; i < 150; i++)
-    {
-        changed_ppg_signal[i] = 0.0;
-    }
-
-    if (ppg_len < 150)
-    {
-        // printf("[PTT] ppg signal length is less than 150, so changing\n");
-        ppg_signal_changed = 1;
-        for (int i = 0; i < ppg_len; i++)
-        {
-            changed_ppg_signal[i] = ppg_signal[i];
-        }
-        double put = ppg_signal[ppg_len - 1];
-        for (int i = ppg_len; i < 150; i++)
-        {
-            changed_ppg_signal[i] = put;
-        }
-        ppg_len = 150;
-    }
-
-    double mother_ppg_signal[ppg_len];
     for (int i = 0; i < ppg_len; i++)
     {
-        mother_ppg_signal[i] = 0.0;
-    }
-
-    if (ppg_signal_changed)
-    {
-        filter_here(changed_ppg_signal, ppg_len, mother_ppg_signal, 0);
-    }
-    else
-    {
-        filter_here(ppg_signal, ppg_len, mother_ppg_signal, 0);
-    }
-
-    for (int i = 0; i < ecg_len; i++)
-    {
-        ecg_filt[i] = mother_ecg_signal[i];
-    }
-    for (int i = 0; i < ppg_len; i++)
-    {
-        ppg_filt[i] = ppg_signal_changed ? mother_ppg_signal[i] : ppg_signal[i];
+        // ppg_filt[i] = ppg_signal_changed ? mother_ppg_signal[i] : ppg_signal[i];
+        ppg_filt[i] = ppg_signal[i];
     }
 
     // good for find_signal_peaks, IG
@@ -619,7 +626,7 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
     double fs_ppg = 26.0;
 
     int is_ecg = 1, to_print = 0;
-    *num_r_peaks = find_signal_peaks(mother_ecg_signal, ecg_len, r_peaks, is_ecg, to_print);
+    *num_r_peaks = find_signal_peaks(ecg_signal, ecg_len, r_peaks, is_ecg, to_print);
     *num_systolic_peaks = find_signal_peaks(ppg_signal, ppg_len, systolic_peaks, 1 - is_ecg, to_print);
 
     double sum_ptt = 0.0;
