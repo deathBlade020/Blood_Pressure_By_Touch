@@ -200,6 +200,7 @@ int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, 
 
             // peaks[num_peaks++] = max_index;
         }
+
         peaks[num_peaks++] = store[0];
         for (int i = 1; i < store_index; i++)
         {
@@ -530,111 +531,27 @@ int min_peak(int a, int b)
 double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int ppg_len, int r_peaks[], int systolic_peaks[], int *num_r_peaks, int *num_systolic_peaks, double ecg_filt[], double ppg_filt[], int bp)
 {
 
-    // int ecg_signal_changed = 0;
-    // double changed_ecg_signal[150];
-    // for (int i = 0; i < 150; i++)
-    // {
-    //     changed_ecg_signal[i] = 0.0;
-    // }
-
-    // if (ecg_len < 150)
-    // {
-    //     // printf("[PTT] ecg signal length is less than 150, so changing\n");
-    //     ecg_signal_changed = 1;
-    //     double put = ecg_signal[ecg_len - 1];
-    //     for (int i = 0; i < ecg_len; i++)
-    //     {
-    //         changed_ecg_signal[i] = ecg_signal[i];
-    //     }
-    //     for (int i = ecg_len; i < 150; i++)
-    //     {
-    //         changed_ecg_signal[i] = put;
-    //     }
-    //     ecg_signal_changed = 1;
-    // }
-    // double mother_ecg_signal[ecg_len];
-    // for (int i = 0; i < ecg_len; i++)
-    // {
-    //     mother_ecg_signal[i] = 0.0;
-    // }
-    // if (ecg_signal_changed)
-    // {
-    //     filter_here(changed_ecg_signal, ecg_len, mother_ecg_signal, 1);
-    // }
-    // else
-    // {
-    //     filter_here(ecg_signal, ecg_len, mother_ecg_signal, 1);
-    // }
-
-    // // for (int i = 0; i < ecg_len; i++)
-    // // {
-    // //     printf("%d,%f\n", i, mother_ecg_signal[i]);
-    // // }
-
-    // double changed_ppg_signal[150];
-    // int ppg_signal_changed = 0;
-    // for (int i = 0; i < 150; i++)
-    // {
-    //     changed_ppg_signal[i] = 0.0;
-    // }
-
-    // if (ppg_len < 150)
-    // {
-    //     // printf("[PTT] ppg signal length is less than 150, so changing\n");
-    //     ppg_signal_changed = 1;
-    //     for (int i = 0; i < ppg_len; i++)
-    //     {
-    //         changed_ppg_signal[i] = ppg_signal[i];
-    //     }
-    //     double put = ppg_signal[ppg_len - 1];
-    //     for (int i = ppg_len; i < 150; i++)
-    //     {
-    //         changed_ppg_signal[i] = put;
-    //     }
-    //     ppg_len = 150;
-    // }
-
-    // double mother_ppg_signal[ppg_len];
-    // for (int i = 0; i < ppg_len; i++)
-    // {
-    //     mother_ppg_signal[i] = 0.0;
-    // }
-
-    // if (ppg_signal_changed)
-    // {
-    //     filter_here(changed_ppg_signal, ppg_len, mother_ppg_signal, 0);
-    // }
-    // else
-    // {
-    //     filter_here(ppg_signal, ppg_len, mother_ppg_signal, 0);
-    // }
-
     for (int i = 0; i < ecg_len; i++)
     {
-        // ecg_filt[i] = ecg_signal_changed ? mother_ecg_signal[i] : ecg_signal[i];
         ecg_filt[i] = ecg_signal[i];
     }
 
     for (int i = 0; i < ppg_len; i++)
     {
-        // ppg_filt[i] = ppg_signal_changed ? mother_ppg_signal[i] : ppg_signal[i];
         ppg_filt[i] = ppg_signal[i];
     }
 
-    // good for find_signal_peaks, IG
-    double fs_ecg = 192.0;
-    double fs_ppg = 26.0;
+    double fs_ecg = 200.0;
+    double fs_ppg = 25.0;
 
     int is_ecg = 1, to_print = 0;
     *num_r_peaks = find_signal_peaks(ecg_signal, ecg_len, r_peaks, is_ecg, to_print);
     *num_systolic_peaks = find_signal_peaks(ppg_signal, ppg_len, systolic_peaks, 1 - is_ecg, to_print);
 
     double sum_ptt = 0.0;
-    int valid_pairs = 0;
-    int tol = 60;
-    int num_class = ecg_len / 100;
+    int valid_pairs = 0, num_pulse = 5;
 
-    for (int i = 0; i < *num_r_peaks && i < *num_systolic_peaks; i++)
+    for (int i = 0; i < num_pulse; i++)
     {
         int r_peak_index = r_peaks[i];
         int systolic_peak_index = systolic_peaks[i];
@@ -646,15 +563,15 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
 
         // printf("rpeak: %d, syspeak: %d\n", r_peak_index, systolic_peak_index);
 
-        double time_r_peak = (double)r_peak_index / fs_ecg;
-        double time_systolic_peak = (double)systolic_peak_index / fs_ppg;
+        // double time_r_peak = (double)r_peak_index / fs_ecg;
+        // double time_systolic_peak = (double)systolic_peak_index / fs_ppg;
 
-        double ptt = fabs((double)(r_peak_index - systolic_peak_index)) / fs_ecg;
+        double ptt = (double)(fabs(r_peak_index - systolic_peak_index)) / (fs_ecg * fs_ppg);
+        ptt *= fs_ppg;
         sum_ptt += ptt;
         valid_pairs++;
     }
     double consecutive_diff = 0.0;
-    int num_pulse = 5;
     int store[num_pulse];
     for (int i = 0; i < num_pulse; i++)
     {
@@ -662,56 +579,27 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
         store[i] = 0;
         store[i] = max_peak(rp, sp) - min_peak(rp, sp);
     }
-
+    
     int diff_30 = 0, allowed_limit = 30;
     for (int i = 1; i < num_pulse; i++)
     {
-        if (store[i] - store[i - 1] <= allowed_limit)
-        {
-            diff_30++;
-        }
-    }
-    // printf("diff_30: %d\n", diff_30);
-
-    int ppg_is_high = 0;
-    if (diff_30 >= num_pulse - 2)
-    {
-        ppg_is_high = 1;
+        diff_30 += (store[i] - store[i - 1] <= allowed_limit);
     }
 
-    printf("BP: %d, ppg_is_high: %d\n", bp, ppg_is_high);
+    int consecutive_diff_result = (diff_30 >= num_pulse - 2);
+    double ptt_ret = (sum_ptt / valid_pairs);
 
-    // int sys1 = systolic_peaks[1], sys2 = systolic_peaks[2];
-    // int rp1 = r_peaks[1], rp2 = r_peaks[2];
-    // if (sys1 != rp1)
-    // {
-    //     double first = sys1 > rp1 ? (double)(sys1 - rp1) : (double)(rp1 - sys1);
-    //     double second = sys2 > rp2 ? (double)(sys2 - rp2) : (double)(rp2 - sys2);
-    //     consecutive_diff = first / second;
-    //     printf("bp: %d,ratio: %f,second: %.f, third: %.f\n", bp, consecutive_diff, first, second);
-    //     div++;
-    // }
+    // double equation = consecutive_diff_result + (1 / ptt_ret);
+
+    int ppg_is_high = (consecutive_diff_result && ptt_ret >= 0.3);
+    
+    printf("BP: %d, consective_diff: %d, PTT: %.2f, ppg_is_high: %d\n", bp, consecutive_diff_result, ptt_ret, ppg_is_high);
 
     if (valid_pairs == 0)
     {
         printf("No valid peak pairs found.\n");
         return -1;
     }
-    double ptt = (sum_ptt / valid_pairs);
-    // double classifier = 0.8 * ptt + 0.2 * consecutive_diff;
-    // double classifier = consecutive_diff;
-    return ptt;
-}
 
-// int main()
-// {
-//     double ecg_signal[] = {};
-//     double ppg_signal[] = {};
-//     int ecg_len = sizeof(ecg_signal) / sizeof(ecg_signal[0]);
-//     int ppg_len = sizeof(ppg_signal) / sizeof(ppg_signal[0]);
-//     int r_peaks[MAX_PEAKS];
-//     int systolic_peaks[MAX_PEAKS];
-//     int num_r_peaks = 0, num_systolic_peaks = 0;
-//     double ptt = calculate_ptt(ecg_signal, ppg_signal, ecg_len, ppg_len, r_peaks, systolic_peaks, num_r_peaks, num_systolic_peaks);
-//     printf("ptt: %f\n", ptt);
-// }
+    return ptt_ret;
+}
