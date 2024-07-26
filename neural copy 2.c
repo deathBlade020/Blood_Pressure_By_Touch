@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
-#include<string.h>
+#include <string.h>
 
 #define INPUT_DIMENSION 10
 #define scale 88.0
@@ -12,7 +12,30 @@
 static void filter(const double b[5], const double a[5], const double x[174], const double zi[4], double y[174]);
 static void filtfilt(const double x_in[150], double y_out[150]);
 
-
+struct features
+{
+  /* data */
+  double hr;
+  double ref_find;
+  double sys_time;
+  double foot_time;
+  double lasi;
+  double crest_time;
+  double mnpv;
+  double pir;
+  double aix;
+  double pulse_height;
+  double pulse_width;
+  double hrv;
+  double amplitude_ratios;
+  double max_amplitude;
+  double min_amplitude;
+  double womersley_number;
+  double alpha;
+  double ipa;
+  double pwv;
+  double sys_time_x;
+};
 // ###################################################################################
 double relu(double x)
 {
@@ -721,7 +744,6 @@ int classifier_scaler(double input[])
 float avG = 0;
 double frate = 0.95;
 
-
 static void filter(const double b[5], const double a[5], const double x[174], const double zi[4], double y[174])
 {
   int k;
@@ -869,7 +891,8 @@ void find_systolic_peaks(double ppg_signal[150], int sys_peaks[], int *num_peaks
   // nl;
 
   int tol = 1, ppg_len = 150;
-  for(int index = 0;index < ppg_len;){
+  for (int index = 0; index < ppg_len;)
+  {
     int idx = index;
     while (idx + 1 < ppg_len && filtered_ppg[idx] >= filtered_ppg[idx + 1])
     {
@@ -995,16 +1018,15 @@ double trapezoidal_area(double *ppg, int n, int start_index, int end_index, doub
   for (int i = start_index; i < end_index; i++)
   {
     double a = ppg[i] < 0 ? -ppg[i] : ppg[i];
-    double b = ppg[i+1] < 0 ? -ppg[i+1] : ppg[i+1];
+    double b = ppg[i + 1] < 0 ? -ppg[i + 1] : ppg[i + 1];
     // area += ((ppg[i] + ppg[i + 1]) / div);
-    area += ((a + b)/div);
+    area += ((a + b) / div);
   }
   return area;
 }
 
 double find_lasi(double *ppg, int sys_peaks[], int num_peaks, double fs, int foot[])
 {
-
 
   // ic(sys_peaks,num_peaks);
   // ic(foot,num_peaks);
@@ -1018,7 +1040,7 @@ double find_lasi(double *ppg, int sys_peaks[], int num_peaks, double fs, int foo
   }
 
   // ic(s3,num_peaks-1);
-  
+
   double s2[num_peaks];
   for (int i = 0; i < num_peaks; i++)
   {
@@ -1272,7 +1294,6 @@ double find_womersley_number(double *ppg, int sys_peaks[], int num_peaks, int fo
   return mean;
 }
 
-
 double find_alpha(double *ppg, int sys_peaks[], int num_peaks, int foot[])
 {
   // print_peaks(sys_peaks,num_peaks);
@@ -1335,7 +1356,7 @@ double find_ipa(double *ppg, int ppg_len, int sys_peaks[], int num_peaks, double
   }
 
   // return area == 0 ? -1 : area;
-  return area < 1 ? area-1 : area;
+  return area < 1 ? area - 1 : area;
 }
 double find_pwv(double *ppg, int sys_peaks[], int num_peaks, double fs, int foot[])
 {
@@ -1395,7 +1416,6 @@ void extract_features(double ppg[], double fs, int ppg_len, struct features *my_
 {
 
   // double ppg[150] = {117,117,117,117,120,120,121,123,124,126,127,128,130,131,134,135,137,140,141,144,145,142,121,119,120,120,120,121,123,123,124,126,127,128,130,131,134,135,137,138,141,141,124,121,123,121,121,123,124,126,126,127,130,131,133,134,135,138,141,144,145,148,151,140,121,120,121,119,119,121,123,123,124,126,128,130,131,133,134,137,140,141,142,147,148,127,120,120,121,119,120,123,124,124,126,128,130,131,133,134,137,140,142,145,148,121,121,123,121,121,124,126,126,128,130,133,134,135,137,140,142,144,145,148,151,137,121,120,121,120,120,121,124,124,124,128,131,133,134,137,141,144,147,149,152,152,154,155,154,120};
-  
 
   int start = 0;
   int end = ppg_len - 1;
@@ -1744,7 +1764,7 @@ int predict_blood_pressure(double feature_vector[], int max_bp, int min_bp)
   // Example input
   // double input[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0}; // Change to match input_dim
 
-  double  output3[16], output4[8], output5[1];
+  double output3[16], output4[8], output5[1];
 
   // Perform forward pass
   forward_layer(layer1, feature_vector, output3);
@@ -1818,7 +1838,8 @@ void get_all_features(struct features f, double arr[20], int to_print)
   }
 }
 
-void send_features_to_bridge(double filtered_ppg_signal[]){
+void send_features_to_bridge(double filtered_ppg_signal[])
+{
   int ppg_len = 150;
   printf("here");
   struct features feat;
@@ -1836,7 +1857,6 @@ int get_blood_pressure(double filtered_ppg_signal[])
 {
 
   int ppg_len = 150;
-
   struct features feat;
   double fs = 26.0;
   extract_features(filtered_ppg_signal, fs, ppg_len, &feat);
@@ -1846,7 +1866,6 @@ int get_blood_pressure(double filtered_ppg_signal[])
 
   double feature_vector[20];
   get_all_features(feat, feature_vector, 0);
-
 
   int blood_pressure = 0;
   int is_high_ppg = classifier_scaler(feature_vector);
@@ -1870,7 +1889,7 @@ int main()
 
   double full_ppg_signal[350] = {};
   // double filtered_ppg_signal[150] = {};
-  double filtered_ppg_signal[150] = {113,116,116,119,119,119,121,121,126,127,124,128,128,126,121,117,119,119,119,121,121,123,124,123,126,127,127,128,127,131,133,126,124,121,121,121,120,124,126,123,127,127,128,130,128,131,130,133,133,130,127,123,123,123,121,126,126,127,127,126,130,130,130,133,133,133,134,133,133,128,124,126,123,126,127,126,128,128,130,131,130,134,134,134,135,134,134,128,124,126,123,127,128,128,130,128,131,133,133,134,134,137,137,135,133,128,126,126,123,127,128,127,130,130,131,133,133,135,137,134,138,138,133,130,126,126,126,124,128,130,128,130,130,133,134,133,137,137,137,140,138,134,131,127,128,126,130,131,130,133};
+  double filtered_ppg_signal[150] = {113, 116, 116, 119, 119, 119, 121, 121, 126, 127, 124, 128, 128, 126, 121, 117, 119, 119, 119, 121, 121, 123, 124, 123, 126, 127, 127, 128, 127, 131, 133, 126, 124, 121, 121, 121, 120, 124, 126, 123, 127, 127, 128, 130, 128, 131, 130, 133, 133, 130, 127, 123, 123, 123, 121, 126, 126, 127, 127, 126, 130, 130, 130, 133, 133, 133, 134, 133, 133, 128, 124, 126, 123, 126, 127, 126, 128, 128, 130, 131, 130, 134, 134, 134, 135, 134, 134, 128, 124, 126, 123, 127, 128, 128, 130, 128, 131, 133, 133, 134, 134, 137, 137, 135, 133, 128, 126, 126, 123, 127, 128, 127, 130, 130, 131, 133, 133, 135, 137, 134, 138, 138, 133, 130, 126, 126, 126, 124, 128, 130, 128, 130, 130, 133, 134, 133, 137, 137, 137, 140, 138, 134, 131, 127, 128, 126, 130, 131, 130, 133};
   int ppg_len = 150, raw_values_coming = 0, ppg_index = 0;
   int cnt = 0;
   // for (int i = ppg_len; i < ppg_len + 150; i++)

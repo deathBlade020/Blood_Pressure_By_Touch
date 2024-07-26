@@ -1,3 +1,4 @@
+import scipy.signal as signal
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -91,7 +92,7 @@ def only_ppg_ptt():
 
     average_ptt, peaks1, peaks2 = find_ptt(ppg_signal_1, ppg_signal_2)
 
-    print("PTT from python:", average_ptt)
+    # print("PTT from python:", average_ptt)
     # print("Peaks in Signal 1:", peaks1)
     # print("Peaks in Signal 2:", peaks2)
 
@@ -151,6 +152,30 @@ def filter_ppg_savgol_dwt(ecg_signal):
     return unfiltered_data_smooth
 
 
+def find_peaks(ppg_signal, threshold):
+    peaks, _ = signal.find_peaks(ppg_signal, height=threshold)
+    return peaks
+
+
+def calculate_ptt_python(ecg_signal, ppg_signal, fs_ecg, fs_ppg):
+    # Adjust threshold as needed
+    r_peaks = find_peaks(ecg_signal, threshold=0.5)
+    # Adjust threshold as needed
+    systolic_peaks = find_peaks(ppg_signal, threshold=0.5)
+
+    if len(r_peaks) == 0 or len(systolic_peaks) == 0:
+        return None  # No valid peaks found
+
+    ptt_values = []
+    for r_peak in r_peaks:
+        closest_systolic_peak = min(
+            systolic_peaks, key=lambda x: abs(x - r_peak * fs_ppg / fs_ecg))
+        ptt = abs(r_peak / fs_ecg - closest_systolic_peak / fs_ppg)
+        ptt_values.append(ptt)
+
+    return np.mean(ptt_values) if ptt_values else None
+
+
 def ecg_ppg_ptt():
 
     os.system("gcc -shared -o ptt_calculation.dll -fPIC ptt.c -lm")
@@ -160,19 +185,25 @@ def ecg_ppg_ptt():
     else:
         lib = ctypes.CDLL("./ptt_calculation.so")
 
-    lib.calculate_ptt.argtypes = [
-        ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double),
-        ctypes.c_int, ctypes.c_int,
-        ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
-        ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)
-    ]
+        lib.calculate_ptt.argtypes = [
+            ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double),
+            ctypes.c_int, ctypes.c_int,
+            ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
+            ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
+            ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double),
+            ctypes.c_int
+        ]
     lib.calculate_ptt.restype = ctypes.c_double
 
-    def calculate_ptt(ecg_signal, ppg_signal):
+    def calculate_ptt(ecg_signal, ppg_signal, bp):
         ecg_len = len(ecg_signal)
         ppg_len = len(ppg_signal)
+
         r_peaks = np.zeros(1000, dtype=np.int32)
         systolic_peaks = np.zeros(1000, dtype=np.int32)
+        ecg_filt = np.zeros(ecg_len, dtype=np.double)
+        ppg_filt = np.zeros(ppg_len, dtype=np.double)
+
         num_r_peaks = ctypes.c_int()
         num_systolic_peaks = ctypes.c_int()
 
@@ -183,20 +214,23 @@ def ecg_ppg_ptt():
         r_peaks_c = r_peaks.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
         systolic_peaks_c = systolic_peaks.ctypes.data_as(
             ctypes.POINTER(ctypes.c_int))
+        ecg_filt_c = ecg_filt.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+        ppg_filt_c = ppg_filt.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
         average_ptt = lib.calculate_ptt(
             ecg_signal_c, ppg_signal_c, ecg_len, ppg_len,
             r_peaks_c, systolic_peaks_c,
-            ctypes.byref(num_r_peaks), ctypes.byref(num_systolic_peaks)
+            ctypes.byref(num_r_peaks), ctypes.byref(num_systolic_peaks),
+            ecg_filt_c, ppg_filt_c, bp
         )
 
         r_peaks = r_peaks[:num_r_peaks.value]
         systolic_peaks = systolic_peaks[:num_systolic_peaks.value]
 
-        return average_ptt, r_peaks, systolic_peaks
+        return average_ptt, r_peaks, systolic_peaks, ecg_filt, ppg_filt
 
-    ppg_path = "ppg_data/ppg_valid.xlsx"
-    ecg_path = "ppg_data/ecg_valid.xlsx"
+    ecg_path = "ppg_data/ecg_valid_24July.xlsx"
+    ppg_path = "ppg_data/ppg_valid_24July.xlsx"
 
     ppg_df = pd.read_excel(ppg_path)
     ecg_df = pd.read_excel(ecg_path)
@@ -204,12 +238,12 @@ def ecg_ppg_ptt():
     ECG = []
     PPG = []
     BP = []
-
     import math
     for col in ppg_df.columns:
         tmp = ppg_df[col].tolist()
         bp = tmp[0].split("/")
-        BP.append(int(bp[0]))
+        BP.append([int(bp[0]), int(bp[1])])
+
         ppg_array = [int(ele) for ele in tmp[1:] if not math.isnan(ele)]
         PPG.append(ppg_array)
 
@@ -226,92 +260,154 @@ def ecg_ppg_ptt():
 
     # ppg_signal = np.array(PPG[0], dtype=np.float64)
     # ecg_signal = np.array(ECG[0], dtype=np.float64)
-    rav_cnt = 0
     import time
+    # problem = [10,28,35,41,43,45,47,48,49,50,51,54,56,57,59,61,62,65,66,68,71,72,73,74,76,83,85,86,88,90]
+    problem = [10]
+
+    till = 1
+    import sys
+    show = int(sys.argv[1])
+    check = 0
+
+    if check:
+        low = []
+        low_bp = []
+        normal = []
+        normal_bp = []
+        high = []
+        high_bp = []
+        for i in range(n_len):
+            # if BP[i][0] <= 100:
+            ppg_signal = np.array(PPG[i], dtype=np.float64)
+            if BP[i][0] <= 100:
+                low.append(ppg_signal)
+                low_bp.append(BP[i][0])
+            elif BP[i][0] >= 101 and BP[i][0] < 140:
+                normal.append(ppg_signal)
+                normal_bp.append(BP[i][0])
+            else:
+                high.append(ppg_signal)
+                high_bp.append(BP[i][0])
+
+        min_length = min(min(len(low),len(normal)), len(high))
+        for i in range(min_length):
+            LOW = np.array(low[i], dtype=np.float64)
+            NORMAL = np.array(normal[i], dtype=np.float64)
+            HIGH = np.array(high[i], dtype=np.float64)
+
+            plt.subplot(3, 1, 1)
+            plt.title(low_bp[i])
+            plt.plot(LOW)
+            plt.gca().axes.get_xaxis().set_visible(False)
+
+            plt.subplot(3, 1, 2)
+            plt.title(normal_bp[i])
+            plt.plot(NORMAL)
+            plt.gca().axes.get_xaxis().set_visible(False)
+
+            plt.subplot(3, 1, 3)
+            plt.title(high_bp[i])
+            plt.plot(HIGH)
+            plt.gca().axes.get_xaxis().set_visible(False)
+
+            plt.show()
+
+        return
+    
+
 
     for i in range(n_len):
-        ppg_signal = np.array(PPG[i], dtype=np.float64)
-        ecg_signal = np.array(ECG[i], dtype=np.float64)
+        # if BP[i][0] <= 100:
+        if BP[i][0] >= 140:
+            ppg_signal = np.array(PPG[i], dtype=np.float64)
+            ecg_signal = np.array(ECG[i], dtype=np.float64)
 
-        diff_ecg = np.diff(ecg_signal)
-        diff_ppg = np.diff(ppg_signal)
+            average_ptt, r_peaks, systolic_peaks, ecg_filt, ppg_filt = calculate_ptt(
+                ecg_signal, ppg_signal, BP[i][0])
 
-        average_ptt, r_peaks, systolic_peaks = calculate_ptt(
-            ecg_signal, ppg_signal)
+            # plt.subplot(2, 1, 1)
+            plt.title(BP[i][0])
+            # plt.plot(ecg_signal)
+            # plt.scatter(r_peaks, [ecg_signal[i] for i in r_peaks], color='r')
 
-        plt.subplot(2, 1, 1)
-        plt.title(BP[i])
-        plt.plot(ecg_signal)
-        # plt.scatter(r_peaks, [diff_ecg[i] for i in r_peaks], color="red")
+            # plt.subplot(2, 1, 2)
+            # plt.title(BP[i][0])
+            
+            plt.plot(ppg_signal)
+            plt.scatter(systolic_peaks, [ppg_signal[i]
+                                        for i in systolic_peaks], color='r')
 
-        plt.subplot(2, 1, 2)
-        plt.title(BP[i])
-        plt.plot(ppg_signal)
-        # plt.scatter(systolic_peaks, [diff_ppg[i]
-        #             for i in systolic_peaks], color="red")
-        # print(f"BP: {BP[i]}, PTT: {average_ptt:.2f}")
-        ravi.append([BP[i], average_ptt])
-        # if BP[i] == 118:
-        #     plt.show()
-        # plt.close()
+            if show:
+                plt.show()
+                plt.close()
+            else:
+                plt.savefig(f"ppg_plots/plot_{i}.png")
 
-        # plt.subplot(2, 1, 1)
-        # plt.title(BP[i])
-        # plt.plot(ecg_signal)
-
-        # plt.subplot(2, 1, 2)
-        # plt.title("PPG")
-        # plt.plot(ppg_signal)
-        # plt.savefig(f"save_here/plot_{i}.jpg")
-        # plt.close()
-        # print(f"index: {i} done")
-        # plt.show()
-
-        # if BP[i] >= 140:
-        #     diff_ecg = np.diff(ecg_signal)
-        #     diff_ppg = np.diff(ppg_signal)
-
-        #     average_ptt, r_peaks, systolic_peaks = calculate_ptt(
-        #         ecg_signal, ppg_signal)
-
-        #     # print(f"BP: {BP[i]}, PTT: {average_ptt:.2f}")
-
-        #     plt.subplot(2, 1, 1)
-        #     plt.title(BP[i])
-        #     plt.plot(diff_ecg)
-        #     plt.scatter(r_peaks, [diff_ecg[i] for i in r_peaks], color="red")
-
-        #     plt.subplot(2, 1, 2)
-        #     plt.title(BP[i])
-        #     plt.plot(diff_ppg)
-        #     plt.scatter(systolic_peaks, [diff_ppg[i]
-        #                 for i in systolic_peaks], color="red")
-
-        #     # plt.show()
-
-        #     rav_cnt += 1
-        #     ravi.append([BP[i], average_ptt])
-
-    ravi.sort(key=lambda x: x[0])
+    # ravi.sort(key=lambda x: x[0])
     # not_printed = 1
 
-    for bp, ptt in ravi:
-        print(f"BP: {bp}, PTT: {ptt:.2f}")
+    # for bp, ptt in ravi:
+    #     print(f"BP: {bp[0]}/{bp[1]}, ptt: {ptt:.2f}")
+
     print("END")
 
 
+def plot_simple_graph(data, bp):
+    plt.title(f"Blood Pressure: {bp}")
+    plt.scatter(range(len(data)), data)
+    plt.xlabel('Index')
+    plt.ylabel('Value')
+    plt.show()
+
+
 def read():
-    filepath = "ecg_data\\ecgs_pvc.json"
-    with open(filepath, "r") as handle:
-        data = json.load(handle)
-        sig = np.array(data[0]["lead1"], dtype=np.float64)
-        sig = [-1 * ele for ele in sig]
-        plt.plot(sig)
-        plt.show()
+    ppg_path = "ppg_data/BP22July.xlsx"
+    ecg_path = "ppg_data/ECG22July.xlsx"
+
+    ppg_df = pd.read_excel(ppg_path)
+    ecg_df = pd.read_excel(ecg_path)
+
+    ECG = []
+    PPG = []
+    BP = []
+
+    import math
+    for col in ppg_df.columns:
+        tmp = ppg_df[col].tolist()
+        bp = tmp[0].split("/")
+        BP.append([int(bp[0]), int(bp[1])])
+
+        ppg_array = [int(ele) for ele in tmp[1:] if not math.isnan(ele)]
+        PPG.append(ppg_array)
+
+    for col in ecg_df.columns:
+        tmp = ecg_df[col].tolist()
+        bp = tmp[0].split("/")
+        ecg_array = [int(ele) for ele in tmp[1:] if not math.isnan(ele)]
+        ECG.append(ecg_array)
+
+    ic(len(ECG))
+    ic(len(PPG))
+    n_len = min(len(ECG), len(PPG))
+
+    low = []
+    high = []
+    normal = []
+    for i in range(n_len):
+        if BP[i][0] < 100:
+            low.append([PPG[i], BP[i][0]])
+        elif BP[i][0] >= 100 and BP[i][0] < 140:
+            normal.append([PPG[i], BP[i][0]])
+        else:
+            high.append([PPG[i], BP[i][0]])
+
+    # for i in range(10):
+    #     plot_simple_graph()
+
+    # ic(high_bp_cnt)
 
 
 # read()
 # stuff()
-
 # only_ppg_ptt()
 ecg_ppg_ptt()
