@@ -928,6 +928,11 @@ int find_signal_peaks(double signal[], int signal_len, int peaks[], int is_ecg, 
             // valid foot checking
             if (signal[peak_index - left] > signal[peak_index] && signal[peak_index] < signal[peak_index + left])
             {
+
+                while (peak_index >= 1 && signal[peak_index] >= signal[peak_index - 1])
+                {
+                    peak_index--;
+                }
                 store[store_index++] = peak_index; // foot here
                 peaks[num_peaks++] = peak_index;
             }
@@ -1934,44 +1939,11 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
         {
             continue;
         }
-
-        // printf("rpeak: %d, syspeak: %d\n", r_peak_index, systolic_peak_index);
-
-        // double time_r_peak = (double)r_peak_index / fs_ecg;
-        // double time_systolic_peak = (double)systolic_peak_index / fs_ppg;
-
         double ptt = (double)(fabs(r_peak_index - systolic_peak_index)) / (fs_ecg * fs_ppg);
         ptt *= fs_ppg;
         sum_ptt += ptt;
         valid_pairs++;
     }
-
-    double less_ppg_signal[150];
-    for (int i = 0; i < 150; i++)
-    {
-        less_ppg_signal[i] = 0.0;
-        less_ppg_signal[i] = ppg_signal[i];
-    }
-
-    struct features feat;
-    extract_features(less_ppg_signal, fs_ppg, 150, &feat);
-
-    double ppg_feature_vector[] = {feat.crest_time, feat.mnpv, feat.sys_time, feat.foot_time, feat.aix, feat.pulse_width, feat.max_amplitude, feat.min_amplitude, feat.womersley_number, feat.ipa};
-    // for (int i = 0; i < NUM_FEATURES; i++)
-    // {
-    //     printf("%f,", ppg_feature_vector[i]);
-    // }
-
-    int class_output = classifier_scaler(ppg_feature_vector);
-    // printf("class_output: %d\n", class_output);
-    // return 1.0;
-
-    if (valid_pairs == 0)
-    {
-        printf("No valid peak pairs found.\n");
-        return -1;
-    }
-    int ppg_peak_diff = 0;
     double consecutive_diff = 0.0;
     int store[num_pulse];
 
@@ -1981,76 +1953,103 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
         store[i] = 0;
         int diff = max_peak(rp, sp) - min_peak(rp, sp);
         store[i] = diff;
-        // printf("rp: %d, sp: %d, diff: %d\n", rp, sp, diff);
     }
-    for (int i = 1; i < num_pulse; i++)
-    {
-        ppg_peak_diff = max_peak(ppg_peak_diff, (systolic_peaks[i] - systolic_peaks[i - 1]));
-    }
-
     int diff_30 = 0, allowed_limit = 30;
     for (int i = 1; i < num_pulse; i++)
     {
         int loc_diff = (store[i] - store[i - 1]);
-        // printf("loc_diff: %d\n", loc_diff);
         diff_30 += (loc_diff <= allowed_limit);
     }
 
     int consecutive_diff_result = (diff_30 >= num_pulse - 2);
-    int allowed_limit1 = -1;
-    if (!consecutive_diff_result)
-    {
-        for (int j = 31; j <= 45; j++)
-        {
-            int diff_301 = 0;
-            allowed_limit1 = j;
-            for (int i = 1; i < num_pulse; i++)
-            {
-                int loc_diff1 = (store[i] - store[i - 1]);
-                diff_301 += (loc_diff1 <= allowed_limit1);
-            }
-            if (diff_301 >= num_pulse - 2)
-            {
-                consecutive_diff_result = 1;
-                break;
-            }
-        }
-    }
-
-    double ptt_ret = (sum_ptt / valid_pairs);
-
-    // double equation = consecutive_diff_result + (1 / ptt_ret);
-    int allowed_value = max_peak(allowed_limit, allowed_limit1);
-    // if (allowed_value > 30)
+    // int allowed_limit1 = -1;
+    // if (!consecutive_diff_result)
     // {
-    //     consecutive_diff_result = 0;
-    // }
-    // if (allowed_value != 30)
-    // {
-    //     consecutive_diff_result = 1 - consecutive_diff_result;
-    //     while (allowed_value != 30)
+    //     for (int j = 31; j <= 45; j++)
     //     {
-    //         ptt_ret -= 0.1;
-    //         allowed_value--;
+    //         int diff_301 = 0;
+    //         allowed_limit1 = j;
+    //         for (int i = 1; i < num_pulse; i++)
+    //         {
+    //             int loc_diff1 = (store[i] - store[i - 1]);
+    //             diff_301 += (loc_diff1 <= allowed_limit1);
+    //         }
+    //         if (diff_301 >= num_pulse - 2)
+    //         {
+    //             consecutive_diff_result = 1;
+    //             break;
+    //         }
     //     }
     // }
 
-    // double hr = find_heart_rate(systolic_peaks, num_pulse, fs_ppg);
-    int ppg_is_high = (consecutive_diff_result && (ptt_ret >= 0.43) || allowed_value >= 35);
-    // ptt_ret = (ptt_ret >= 0.5 ? ptt_ret * 0.8 : ptt_ret * 1.2);
+    double ptt_ret = (sum_ptt / valid_pairs);
 
-    // double equation = ppg_is_high + (ptt_ret * ptt_ret) + (0.1 * allowed_value) + (1 - consecutive_diff_result);
+    int stuff = (consecutive_diff_result && (ptt_ret >= 0.3));
 
-    // printf("BP: %d, consective_diff: %d, PTT: %.2f, max_allowed: %d, ppg_is_high: %d, ppg_peak_diff: %d\n", bp, consecutive_diff_result, ptt_ret, allowed_value, ppg_is_high, ppg_peak_diff);
+    double pulse_amplitude = 0.0;
 
-    // printf("BP: %d, consective_diff: %d, PTT: %.2f, max_allowed: %d, ppg_is_high: %d, class_output: %d\n", bp, consecutive_diff_result, ptt_ret, allowed_value, ppg_is_high, class_output);
-    int final_output = (consecutive_diff_result ^ class_output);
-    // printf("BP: %d, consective_diff: %d, ppg_is_high: %d, class_output: %d, final_output: %d\n", bp, consecutive_diff_result, ppg_is_high, class_output, final_output);
-    printf("BP: %d, ppg_is_high: %d\n", bp, ppg_is_high & class_output);
+    for (int i = 0; i < num_pulse; i++)
+    {
+        int foot = systolic_peaks[i];
+        while (foot + 1 < ppg_len && ppg_signal[foot] <= ppg_signal[foot + 1])
+        {
+            foot++;
+        }
 
-    // printf("BP; %d, final_output1: %d\n", bp, final_output1);
+        double A = ppg_signal[foot], B = ppg_signal[systolic_peaks[i]];
+        if (A > B)
+        {
+            pulse_amplitude += (A - B);
+        }
+        else
+        {
+            pulse_amplitude += (B - A);
+        }
+    }
 
-    // printf("BP; %d, final_output1: %d,final_output2: %d, final_output3: %d, final_output4: %d\n", bp, final_output1, final_output2, final_output3, final_output4);
-    // printf("%d,", (bp >= 140 ? 1 : 0));
+    pulse_amplitude /= num_pulse;
+    double pulse_widths = 0.0;
+    int foot_sys_peak[num_pulse];
+    for (int i = 0; i < num_pulse; i++)
+    {
+        int foot = systolic_peaks[i];
+        while (foot + 1 < ppg_len && ppg_signal[foot] <= ppg_signal[foot + 1])
+        {
+            foot++;
+        }
+        int peak_index = foot;
+        foot_sys_peak[i] = foot;
+        double half_max = ppg_signal[peak_index] / 2.0;
+
+        int left_index = peak_index;
+        while (left_index > 0 && ppg_signal[left_index] > half_max)
+        {
+            left_index--;
+        }
+
+        int right_index = peak_index;
+        while (right_index < num_pulse - 1 && ppg_signal[right_index] > half_max)
+        {
+            right_index++;
+        }
+
+        pulse_widths += (right_index - left_index) / fs_ppg;
+    }
+
+    // ###############################################################################################
+    
+
+    
+
+    // ################################################################################################
+    // printf("%d,",bp);
+    // printf("%f,",pulse_amplitude);
+    // printf("%f,",pulse_widths);
+
+    int prediction = ((pulse_amplitude >= 10 && pulse_amplitude <= 37.0) && (pulse_widths >= 6 && pulse_widths <= 13));
+    // printf("BP: %d, Prediction: %d\n", bp, prediction);
+
+    // printf("bp: %d, pulse_amplitude: %f, pulse_widths: %f, Prediction: %d\n", bp, pulse_amplitude, pulse_widths, prediction);
+    double ppg_is_high = 1;
     return ppg_is_high;
 }

@@ -176,6 +176,25 @@ def calculate_ptt_python(ecg_signal, ppg_signal, fs_ecg, fs_ppg):
     return np.mean(ptt_values) if ptt_values else None
 
 
+def normalise(data):
+    max_val = np.max(data)
+    min_val = np.min(data)
+    new_data = [0] * len(data)
+    for i in range(len(data)):
+        new_data[i] = (data[i] - min_val)/(max_val - min_val)
+    return new_data
+
+def euclidean_distance(list1, list2):
+    arr1 = np.array(list1)
+    arr2 = np.array(list2)
+    
+    diff = arr1 - arr2
+    
+    distance = np.sqrt(np.sum(diff ** 2))
+    
+    return distance
+
+
 def ecg_ppg_ptt():
 
     os.system("gcc -shared -o ptt_calculation.dll -fPIC ptt.c -lm")
@@ -243,7 +262,6 @@ def ecg_ppg_ptt():
         tmp = ppg_df[col].tolist()
         bp = tmp[0].split("/")
         BP.append([int(bp[0]), int(bp[1])])
-
         ppg_array = [int(ele) for ele in tmp[1:] if not math.isnan(ele)]
         PPG.append(ppg_array)
 
@@ -266,8 +284,12 @@ def ecg_ppg_ptt():
 
     till = 1
     import sys
-    show = int(sys.argv[1])
-    check = 0
+    show = -1
+    if len(sys.argv) < 2:
+        show = 0
+    else:
+        show = int(sys.argv[1])
+    check = 1
 
     if check:
         low = []
@@ -276,72 +298,149 @@ def ecg_ppg_ptt():
         normal_bp = []
         high = []
         high_bp = []
+        limit = 10000
         for i in range(n_len):
-            # if BP[i][0] <= 100:
-            ppg_signal = np.array(PPG[i], dtype=np.float64)
-            if BP[i][0] <= 100:
-                low.append(ppg_signal)
-                low_bp.append(BP[i][0])
-            elif BP[i][0] >= 101 and BP[i][0] < 140:
-                normal.append(ppg_signal)
-                normal_bp.append(BP[i][0])
-            else:
+            if i in [1,3,4,5,6,7,8,10,11,12]:
+            # if i in [10,11,12]:
+
+
+                # if BP[i][0] <= 100:
+                ppg_signal = normalise(np.array(PPG[i], dtype=np.float64))
+                # ppg_signal = normalise(ppg_signal)
+
                 high.append(ppg_signal)
+                limit = min(limit,len(ppg_signal))
+                # ic(len(ppg_signal))
                 high_bp.append(BP[i][0])
 
-        min_length = min(min(len(low),len(normal)), len(high))
-        for i in range(min_length):
-            LOW = np.array(low[i], dtype=np.float64)
-            NORMAL = np.array(normal[i], dtype=np.float64)
-            HIGH = np.array(high[i], dtype=np.float64)
+                # if BP[i][0] <= 100:
+                #     low.append(ppg_signal)
+                #     low_bp.append(BP[i][0])
+                # elif BP[i][0] >= 101 and BP[i][0] < 140:
+                #     normal.append(ppg_signal)
+                #     normal_bp.append(BP[i][0])
+                # else:
+                    
 
-            plt.subplot(3, 1, 1)
-            plt.title(low_bp[i])
-            plt.plot(LOW)
-            plt.gca().axes.get_xaxis().set_visible(False)
+        high_avg = [0] * limit
 
-            plt.subplot(3, 1, 2)
-            plt.title(normal_bp[i])
-            plt.plot(NORMAL)
-            plt.gca().axes.get_xaxis().set_visible(False)
+        for j in range(limit):
+            for i in range(len(high)):
+                high_avg[j] += high[i][j]
 
-            plt.subplot(3, 1, 3)
-            plt.title(high_bp[i])
-            plt.plot(HIGH)
-            plt.gca().axes.get_xaxis().set_visible(False)
+            # high_avg[j] /= limit
+        ######################################################################
+        ppg_path = "ppg_data/Test_Data.xlsx"
 
-            plt.show()
+        check_df = pd.read_excel(ppg_path)
+        check = []
+        
+        for col in check_df.columns:
+            tmp = check_df[col].tolist()
+            bp = tmp[0].split("/")
+            ppg_array = [int(ele) for ele in tmp[1:] if not math.isnan(ele)]
+            ppg_sig = ppg_array
+            if len(ppg_sig) >= limit:
+                tmp_arr = normalise(ppg_sig[0:limit])
+                distance = euclidean_distance(high_avg, tmp_arr)
+                ic(bp[0],distance)
+
+
+       
+        return
+        ######################################################################
+        # print(high_avg)
+
+        for i in range(len(PPG)):
+            if BP[i][0] >= 140:
+                ppg_sig = PPG[i]
+                if len(ppg_sig) >= limit:
+                    tmp = PPG[i][0:limit]
+                    tmp = normalise(tmp)
+                    distance = euclidean_distance(high_avg, tmp)
+                    ic(BP[i][0],distance)
+
+        # plt.plot(high_avg)
+        # plt.show()
+
+        # min_length = min(min(len(low), len(normal)), len(high))
+        # for i in range(min_length):
+
+        #     LOW = np.array(low[i], dtype=np.float64)
+        #     NORMAL = np.array(normal[i], dtype=np.float64)
+        #     HIGH = np.array(high[i], dtype=np.float64)
+
+        #     LOW = normalise(LOW)
+        #     NORMAL = normalise(NORMAL)
+        #     HIGH = normalise(HIGH)
+
+        #     plt.subplot(3, 1, 1)
+        #     plt.title(low_bp[i])
+        #     # plt.scatter(list(range(len(HIGH))), HIGH,
+        #     #             color='blue', marker='o', s=10)
+        #     plt.plot(LOW)
+        #     plt.gca().axes.get_xaxis().set_visible(False)
+
+        #     plt.subplot(3, 1, 2)
+        #     plt.title(normal_bp[i])
+        #     # plt.scatter(list(range(len(NORMAL))), NORMAL,
+        #     #             color='blue', marker='o', s=10)
+        #     plt.plot(NORMAL)
+        #     plt.gca().axes.get_xaxis().set_visible(False)
+
+        #     plt.subplot(3, 1, 3)
+        #     plt.title(high_bp[i])
+        #     # plt.scatter(list(range(len(HIGH))), HIGH,
+        #     #             color='blue', marker='o', s=10)
+        #     plt.plot(HIGH)
+        #     plt.gca().axes.get_xaxis().set_visible(False)
+
+        #     plt.savefig(f"ppg_plots/plot_{i}.png")
+        #     plt.close()
+        # plt.show()
 
         return
-    
 
-
+    be = 0
+    all_in = 1
     for i in range(n_len):
-        # if BP[i][0] <= 100:
-        if BP[i][0] >= 140:
+        if all_in:
+            # if BP[i][0] >= 100 and BP[i][0] < 139:
+            # if BP[i][0] <= 100:
+            # if BP[i][0] >= 140:
+
             ppg_signal = np.array(PPG[i], dtype=np.float64)
             ecg_signal = np.array(ECG[i], dtype=np.float64)
+            mean = math.ceil(np.mean(ppg_signal))
+            median = np.median(ppg_signal)
+            max_ppg = np.max(ppg_signal)
+            min_ppg = np.min(ppg_signal)
 
-            average_ptt, r_peaks, systolic_peaks, ecg_filt, ppg_filt = calculate_ptt(
-                ecg_signal, ppg_signal, BP[i][0])
+            diff = abs(mean - median)
+            # ic(BP[i][0], mean, median, max_ppg, min_ppg)
+
+            # average_ptt, r_peaks, systolic_peaks, ecg_filt, ppg_filt = calculate_ptt(
+            #     ecg_signal, ppg_signal, BP[i][0])
 
             # plt.subplot(2, 1, 1)
-            plt.title(BP[i][0])
+            # plt.title(BP[i][0])
             # plt.plot(ecg_signal)
             # plt.scatter(r_peaks, [ecg_signal[i] for i in r_peaks], color='r')
 
             # plt.subplot(2, 1, 2)
             # plt.title(BP[i][0])
-            
-            plt.plot(ppg_signal)
-            plt.scatter(systolic_peaks, [ppg_signal[i]
-                                        for i in systolic_peaks], color='r')
 
-            if show:
-                plt.show()
-                plt.close()
-            else:
-                plt.savefig(f"ppg_plots/plot_{i}.png")
+            # plt.plot(ppg_signal)
+            # plt.scatter(systolic_peaks, [ppg_signal[i]
+            #                              for i in systolic_peaks], color='r')
+
+            # if show:
+            #     plt.show()
+            #     plt.close()
+            # else:
+            #     plt.savefig(f"ppg_plots/plot_{i}.png")
+
+            # break
 
     # ravi.sort(key=lambda x: x[0])
     # not_printed = 1
@@ -349,7 +448,7 @@ def ecg_ppg_ptt():
     # for bp, ptt in ravi:
     #     print(f"BP: {bp[0]}/{bp[1]}, ptt: {ptt:.2f}")
 
-    print("END")
+    print("*** CODE ENDS HERE ***")
 
 
 def plot_simple_graph(data, bp):
