@@ -1907,6 +1907,18 @@ int classifier_scaler(double input[])
     return final_pred;
 }
 
+int compare_doubles(const void *a, const void *b)
+{
+    double arg1 = *(const double *)a;
+    double arg2 = *(const double *)b;
+
+    if (arg1 < arg2)
+        return -1;
+    if (arg1 > arg2)
+        return 1;
+    return 0;
+}
+
 double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int ppg_len, int r_peaks[], int systolic_peaks[], int *num_r_peaks, int *num_systolic_peaks, double ecg_filt[], double ppg_filt[], int bp)
 {
 
@@ -1920,7 +1932,7 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
         ppg_filt[i] = ppg_signal[i];
     }
 
-    double fs_ecg = 200.0;
+    double fs_ecg = 233.0;
     double fs_ppg = 25.0;
 
     int is_ecg = 1, to_print = 0;
@@ -1929,127 +1941,185 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
 
     double sum_ptt = 0.0;
     int valid_pairs = 0, num_pulse = 5;
-
-    for (int i = 0; i < *num_r_peaks && *num_systolic_peaks; i++)
+    double store[num_pulse];
+    int store_index = 0;
+    for (int i = 0; i < *num_r_peaks; i++)
     {
-        int r_peak_index = r_peaks[i];
-        int systolic_peak_index = systolic_peaks[i];
-
-        if (r_peak_index >= ecg_len || systolic_peak_index >= ppg_len)
+        int closest_r_peak = -1;
+        // int min_distance = 10000;
+        double min_distance = INFINITY;
+        for (int j = 0; j < *num_systolic_peaks; j++)
         {
-            continue;
+            if (systolic_peaks[j] > r_peaks[i])
+            {
+                double distance = (systolic_peaks[j] / fs_ppg) - (r_peaks[i] / fs_ecg);
+                if (distance < 0)
+                {
+                    distance = -1 * distance;
+                }
+                if (distance < min_distance)
+                {
+                    min_distance = distance;
+                    // printf("systolic_peaks[j]: %d, r_peaks[i]: %d, min_distance: %f\n", systolic_peaks[j], r_peaks[i], min_distance);
+                    closest_r_peak = j;
+                }
+            }
         }
-        double ptt = (double)(fabs(r_peak_index - systolic_peak_index)) / (fs_ecg * fs_ppg);
-        ptt *= fs_ppg;
-        sum_ptt += ptt;
-        valid_pairs++;
+        if (closest_r_peak != -1)
+        {
+            valid_pairs++;
+            store[store_index++] = min_distance;
+            // sum_ptt += (((double)min_distance / (fs_ppg * fs_ecg))) * fs_ppg;
+            // sum_ptt += min_distance;
+        }
+    }
+    qsort(store, store_index, sizeof(double), compare_doubles);
+    for (int i = 0; i < (int)(store_index / 2); i++)
+    {
+        sum_ptt += store[i];
+        valid_pairs--;
     }
     double consecutive_diff = 0.0;
-    int store[num_pulse];
 
+    int store_ratio[num_pulse];
     for (int i = 0; i < num_pulse; i++)
     {
         int rp = r_peaks[i], sp = systolic_peaks[i];
-        store[i] = 0;
-        int diff = max_peak(rp, sp) - min_peak(rp, sp);
-        store[i] = diff;
+        store_ratio[i] = 0;
+        store_ratio[i] = max_peak(rp, sp) - min_peak(rp, sp);
     }
+    
     int diff_30 = 0, allowed_limit = 30;
     for (int i = 1; i < num_pulse; i++)
     {
-        int loc_diff = (store[i] - store[i - 1]);
+        int loc_diff = (store_ratio[i] - store_ratio[i - 1]);
         diff_30 += (loc_diff <= allowed_limit);
     }
 
     int consecutive_diff_result = (diff_30 >= num_pulse - 2);
-    // int allowed_limit1 = -1;
-    // if (!consecutive_diff_result)
+    printf("BP: %d, PTT: %f, diff: %d\n", bp, sum_ptt,consecutive_diff_result);
+    double ppg_is_high = 1;
+    return sum_ptt;
+
+    // printf("BP: %d, PTT: %.3f\n", bp, sum_ptt);
+    // print_new_lines();
+
+    // for (int i = 0; i < *num_r_peaks && *num_systolic_peaks; i++)
     // {
-    //     for (int j = 31; j <= 45; j++)
+    //     int r_peak_index = r_peaks[i];
+    //     int systolic_peak_index = systolic_peaks[i];
+
+    //     if (r_peak_index >= ecg_len || systolic_peak_index >= ppg_len)
     //     {
-    //         int diff_301 = 0;
-    //         allowed_limit1 = j;
-    //         for (int i = 1; i < num_pulse; i++)
-    //         {
-    //             int loc_diff1 = (store[i] - store[i - 1]);
-    //             diff_301 += (loc_diff1 <= allowed_limit1);
-    //         }
-    //         if (diff_301 >= num_pulse - 2)
-    //         {
-    //             consecutive_diff_result = 1;
-    //             break;
-    //         }
+    //         continue;
+    //     }
+    //     double ptt = (double)(fabs(r_peak_index - systolic_peak_index)) / (fs_ecg * fs_ppg);
+    //     ptt *= fs_ppg;
+    //     sum_ptt += ptt;
+    //     valid_pairs++;
+    // }
+
+    // double consecutive_diff = 0.0;
+    // int store[num_pulse];
+
+    // for (int i = 0; i < num_pulse; i++)
+    // {
+    //     int rp = r_peaks[i], sp = systolic_peaks[i];
+    //     store[i] = 0;
+    //     int diff = max_peak(rp, sp) - min_peak(rp, sp);
+    //     store[i] = diff;
+    // }
+    // int diff_30 = 0, allowed_limit = 30;
+    // for (int i = 1; i < num_pulse; i++)
+    // {
+    //     int loc_diff = (store[i] - store[i - 1]);
+    //     diff_30 += (loc_diff <= allowed_limit);
+    // }
+
+    // int consecutive_diff_result = (diff_30 >= num_pulse - 2);
+    // // int allowed_limit1 = -1;
+    // // if (!consecutive_diff_result)
+    // // {
+    // //     for (int j = 31; j <= 45; j++)
+    // //     {
+    // //         int diff_301 = 0;
+    // //         allowed_limit1 = j;
+    // //         for (int i = 1; i < num_pulse; i++)
+    // //         {
+    // //             int loc_diff1 = (store[i] - store[i - 1]);
+    // //             diff_301 += (loc_diff1 <= allowed_limit1);
+    // //         }
+    // //         if (diff_301 >= num_pulse - 2)
+    // //         {
+    // //             consecutive_diff_result = 1;
+    // //             break;
+    // //         }
+    // //     }
+    // // }
+
+    // double ptt_ret = (sum_ptt / valid_pairs);
+
+    // int stuff = (consecutive_diff_result && (ptt_ret >= 0.3));
+
+    // double pulse_amplitude = 0.0;
+
+    // for (int i = 0; i < num_pulse; i++)
+    // {
+    //     int foot = systolic_peaks[i];
+    //     while (foot + 1 < ppg_len && ppg_signal[foot] <= ppg_signal[foot + 1])
+    //     {
+    //         foot++;
+    //     }
+
+    //     double A = ppg_signal[foot], B = ppg_signal[systolic_peaks[i]];
+    //     if (A > B)
+    //     {
+    //         pulse_amplitude += (A - B);
+    //     }
+    //     else
+    //     {
+    //         pulse_amplitude += (B - A);
     //     }
     // }
 
-    double ptt_ret = (sum_ptt / valid_pairs);
+    // pulse_amplitude /= num_pulse;
+    // double pulse_widths = 0.0;
+    // int foot_sys_peak[num_pulse];
+    // for (int i = 0; i < num_pulse; i++)
+    // {
+    //     int foot = systolic_peaks[i];
+    //     while (foot + 1 < ppg_len && ppg_signal[foot] <= ppg_signal[foot + 1])
+    //     {
+    //         foot++;
+    //     }
+    //     int peak_index = foot;
+    //     foot_sys_peak[i] = foot;
+    //     double half_max = ppg_signal[peak_index] / 2.0;
 
-    int stuff = (consecutive_diff_result && (ptt_ret >= 0.3));
+    //     int left_index = peak_index;
+    //     while (left_index > 0 && ppg_signal[left_index] > half_max)
+    //     {
+    //         left_index--;
+    //     }
 
-    double pulse_amplitude = 0.0;
+    //     int right_index = peak_index;
+    //     while (right_index < num_pulse - 1 && ppg_signal[right_index] > half_max)
+    //     {
+    //         right_index++;
+    //     }
 
-    for (int i = 0; i < num_pulse; i++)
-    {
-        int foot = systolic_peaks[i];
-        while (foot + 1 < ppg_len && ppg_signal[foot] <= ppg_signal[foot + 1])
-        {
-            foot++;
-        }
+    //     pulse_widths += (right_index - left_index) / fs_ppg;
+    // }
 
-        double A = ppg_signal[foot], B = ppg_signal[systolic_peaks[i]];
-        if (A > B)
-        {
-            pulse_amplitude += (A - B);
-        }
-        else
-        {
-            pulse_amplitude += (B - A);
-        }
-    }
+    // // ###############################################################################################
 
-    pulse_amplitude /= num_pulse;
-    double pulse_widths = 0.0;
-    int foot_sys_peak[num_pulse];
-    for (int i = 0; i < num_pulse; i++)
-    {
-        int foot = systolic_peaks[i];
-        while (foot + 1 < ppg_len && ppg_signal[foot] <= ppg_signal[foot + 1])
-        {
-            foot++;
-        }
-        int peak_index = foot;
-        foot_sys_peak[i] = foot;
-        double half_max = ppg_signal[peak_index] / 2.0;
+    // // ################################################################################################
+    // // printf("%d,",bp);
+    // // printf("%f,",pulse_amplitude);
+    // // printf("%f,",pulse_widths);
 
-        int left_index = peak_index;
-        while (left_index > 0 && ppg_signal[left_index] > half_max)
-        {
-            left_index--;
-        }
+    // int prediction = ((pulse_amplitude >= 10 && pulse_amplitude <= 37.0) && (pulse_widths >= 6 && pulse_widths <= 13));
+    // // printf("BP: %d, Prediction: %d\n", bp, prediction);
 
-        int right_index = peak_index;
-        while (right_index < num_pulse - 1 && ppg_signal[right_index] > half_max)
-        {
-            right_index++;
-        }
-
-        pulse_widths += (right_index - left_index) / fs_ppg;
-    }
-
-    // ###############################################################################################
-    
-
-    
-
-    // ################################################################################################
-    // printf("%d,",bp);
-    // printf("%f,",pulse_amplitude);
-    // printf("%f,",pulse_widths);
-
-    int prediction = ((pulse_amplitude >= 10 && pulse_amplitude <= 37.0) && (pulse_widths >= 6 && pulse_widths <= 13));
-    // printf("BP: %d, Prediction: %d\n", bp, prediction);
-
-    // printf("bp: %d, pulse_amplitude: %f, pulse_widths: %f, Prediction: %d\n", bp, pulse_amplitude, pulse_widths, prediction);
-    double ppg_is_high = 1;
-    return ppg_is_high;
+    // // printf("bp: %d, pulse_amplitude: %f, pulse_widths: %f, Prediction: %d\n", bp, pulse_amplitude, pulse_widths, prediction);
 }
