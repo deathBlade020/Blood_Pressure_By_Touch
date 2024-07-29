@@ -198,7 +198,6 @@ def euclidean_distance(list1, list2):
 
 def ecg_ppg_ptt():
 
-
     file_path = 'ptt_calculation.dll'
 
     if os.path.exists(file_path):
@@ -284,116 +283,45 @@ def ecg_ppg_ptt():
     n_len = min(len(ECG), len(PPG))
     ravi = []
 
-    # # ppg_signal = np.array(PPG[0], dtype=np.float64)
-    # # ecg_signal = np.array(ECG[0], dtype=np.float64)
-    # import time
-    # # problem = [10,28,35,41,43,45,47,48,49,50,51,54,56,57,59,61,62,65,66,68,71,72,73,74,76,83,85,86,88,90]
-    # problem = [10]
-
-    # till = 1
-    # import sys
-    # show = -1
-    # if len(sys.argv) < 2:
-    #     show = 0
-    # else:
-    #     show = int(sys.argv[1])
-    # check = 1
-
-    # if check:
-    #     low = []
-    #     low_bp = []
-    #     normal = []
-    #     normal_bp = []
-    #     high = []
-    #     high_bp = []
-    #     limit = 10000
-    #     for i in range(n_len):
-    #         ppg_signal = normalise(np.array(PPG[i], dtype=np.float64))
-    #         bp_here = (BP[i][0])
-    #         if bp_here < 100:
-    #             low.append(ppg_signal)
-    #             low_bp.append(bp_here)
-    #         elif bp_here >= 100 and bp_here < 140:
-    #             normal.append(ppg_signal)
-    #             normal_bp.append(bp_here)
-    #         else:
-    #             high.append(ppg_signal)
-    #             high_bp.append(bp_here)
-
-    #     # plt.plot(high_avg)
-    #     # plt.show()
-
-    #     min_length = min(min(len(low), len(normal)), len(high))
-    #     for i in range(min_length):
-
-    #         LOW = np.array(low[i], dtype=np.float64)
-    #         NORMAL = np.array(normal[i], dtype=np.float64)
-    #         HIGH = np.array(high[i], dtype=np.float64)
-
-    #         LOW = normalise(LOW)
-    #         NORMAL = normalise(NORMAL)
-    #         HIGH = normalise(HIGH)
-
-    #         plt.subplot(3, 1, 1)
-    #         plt.title(low_bp[i])
-    #         # plt.scatter(list(range(len(HIGH))), HIGH,
-    #         #             color='blue', marker='o', s=10)
-    #         plt.plot(LOW)
-    #         plt.gca().axes.get_xaxis().set_visible(False)
-
-    #         plt.subplot(3, 1, 2)
-    #         plt.title(normal_bp[i])
-    #         # plt.scatter(list(range(len(NORMAL))), NORMAL,
-    #         #             color='blue', marker='o', s=10)
-    #         plt.plot(NORMAL)
-    #         plt.gca().axes.get_xaxis().set_visible(False)
-
-    #         plt.subplot(3, 1, 3)
-    #         plt.title(high_bp[i])
-    #         # plt.scatter(list(range(len(HIGH))), HIGH,
-    #         #             color='blue', marker='o', s=10)
-    #         plt.plot(HIGH)
-    #         plt.gca().axes.get_xaxis().set_visible(False)
-
-    #         # plt.savefig(f"ppg_plots/plot_{i}.png")
-    #         plt.show()
-    #         plt.close()
-
-    #     return
-
-    be = 0
-    ravi = []
-    
     for i in range(n_len):
         bp_local = BP[i][0]
-        if 1:
+        # if bp_local > 100 and bp_local < 140:
+        if bp_local >= 140:
             try:
-                ppg_signal = np.array(PPG[i], dtype=np.float64)
-                ecg_signal = np.array(ECG[i], dtype=np.float64)
+                ppg_signal = np.array(PPG[i], dtype=np.float64)[0:130]
+                ecg_signal = np.array(ECG[i], dtype=np.float64)[0:350]
 
                 average_ptt, r_peaks, systolic_peaks, ecg_filt, ppg_filt = calculate_ptt(
                     ecg_signal, ppg_signal, bp_local)
+
+                # r_peaks += 150
+
+                ic(r_peaks)
+                ic(systolic_peaks)
+                print("\n")
+
+                # plt.subplot(2, 1, 1)
+                # plt.title(bp_local)
+                # plt.plot(ecg_signal)
+                # plt.scatter(r_peaks, [ecg_signal[i] for i in r_peaks], color='r')
+
+                # plt.subplot(2, 1, 2)
+                # plt.title(bp_local)
+
+                # plt.plot(ppg_signal)
+                # plt.scatter(systolic_peaks, [ppg_signal[i]
+                #                              for i in systolic_peaks], color='r')
+                # plt.show()
+
+                # ic(bp_local,average_ptt)
+                # print("\n")
+
+                # print("\n")
+
                 # ic(bp_local,average_ptt)
                 ravi.append([bp_local, average_ptt])
-
-                # ic(r_peaks)
-                # ic(systolic_peaks)
-
-                plt.subplot(2, 1, 1)
-                plt.title(BP[i][0])
-                plt.plot(ecg_signal)
-                plt.scatter(r_peaks, [ecg_signal[i] for i in r_peaks], color='r')
-
-                plt.subplot(2, 1, 2)
-                plt.title(BP[i][0])
-
-                plt.plot(ppg_signal)
-                plt.scatter(systolic_peaks, [ppg_signal[i]
-                                             for i in systolic_peaks], color='r')
-                plt.show()
-                return
             except Exception as err:
-                print(f"error: {err}")
+                print(err)
 
     ravi.sort(key=lambda x: x[0])
     # for bp, ptt in ravi:
