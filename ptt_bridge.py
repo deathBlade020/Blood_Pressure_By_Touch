@@ -282,23 +282,32 @@ def ecg_ppg_ptt():
     ic(len(PPG))
     n_len = min(len(ECG), len(PPG))
     ravi = []
-
+    cnt = 0
     for i in range(n_len):
         bp_local = BP[i][0]
         # if bp_local > 100 and bp_local < 140:
+        # if bp_local >= 140 or bp_local <= 100:
         if bp_local >= 140:
+            # if cnt > 5:
+            #     break
+            # else:
+            #     cnt += 1
+
             try:
                 ppg_signal = np.array(PPG[i], dtype=np.float64)[0:130]
                 ecg_signal = np.array(ECG[i], dtype=np.float64)[0:350]
 
                 average_ptt, r_peaks, systolic_peaks, ecg_filt, ppg_filt = calculate_ptt(
                     ecg_signal, ppg_signal, bp_local)
+                
+
+                # print("*" * 50)
 
                 # r_peaks += 150
 
-                ic(r_peaks)
-                ic(systolic_peaks)
-                print("\n")
+                # ic(r_peaks)
+                # ic(systolic_peaks)
+                # print("\n")
 
                 # plt.subplot(2, 1, 1)
                 # plt.title(bp_local)
@@ -319,7 +328,9 @@ def ecg_ppg_ptt():
                 # print("\n")
 
                 # ic(bp_local,average_ptt)
-                ravi.append([bp_local, average_ptt])
+                # ravi.append([bp_local, average_ptt])
+                # return
+            
             except Exception as err:
                 print(err)
 

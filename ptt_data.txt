@@ -1,0 +1,2152 @@
+rr_distance: 36
+ss_distance: 13
+diff: 23
+
+rr_distance: 36
+ss_distance: 12
+diff: 24
+
+rr_distance: 36
+ss_distance: 13
+diff: 23
+
+rr_distance: 42
+ss_distance: 12
+diff: 30
+
+rr_distance: 35
+ss_distance: 13
+diff: 22
+
+rr_distance: 35
+ss_distance: 13
+diff: 22
+
+rr_distance: 36
+ss_distance: 12
+diff: 24
+
+rr_distance: 36
+ss_distance: 12
+diff: 24
+
+rr_distance: 35
+ss_distance: 12
+diff: 23
+
+BP: 98, sum_ptt_ppg: 0.38, ppg_is_high: 0 
+**************************************************
+rr_distance: 89
+ss_distance: 16
+diff: 73
+
+rr_distance: 56
+ss_distance: 23
+diff: 33
+
+rr_distance: 58
+ss_distance: 19
+diff: 39
+
+BP: 153, sum_ptt_ppg: 0.04, ppg_is_high: 1 
+**************************************************
+rr_distance: 101
+ss_distance: 20
+diff: 81
+
+rr_distance: 55
+ss_distance: 20
+diff: 35
+
+rr_distance: 54
+ss_distance: 18
+diff: 36
+
+rr_distance: 54
+ss_distance: 21
+diff: 33
+
+BP: 128, sum_ptt_ppg: 0.76, ppg_is_high: 1 
+**************************************************
+rr_distance: 57
+ss_distance: 20
+diff: 37
+
+rr_distance: 87
+ss_distance: 19
+diff: 68
+
+rr_distance: 57
+ss_distance: 20
+diff: 37
+
+rr_distance: 56
+ss_distance: 19
+diff: 37
+
+BP: 157, sum_ptt_ppg: 0.74, ppg_is_high: 1 
+**************************************************
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 41
+ss_distance: 16
+diff: 25
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 41
+ss_distance: 13
+diff: 28
+
+BP: 106, sum_ptt_ppg: 0.32, ppg_is_high: 0 
+**************************************************
+rr_distance: 95
+ss_distance: 16
+diff: 79
+
+rr_distance: 34
+ss_distance: 17
+diff: 17
+
+rr_distance: 92
+ss_distance: 18
+diff: 74
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+BP: 100, sum_ptt_ppg: 0.68, ppg_is_high: 1 
+**************************************************
+rr_distance: 54
+ss_distance: 17
+diff: 37
+
+rr_distance: 54
+ss_distance: 17
+diff: 37
+
+rr_distance: 66
+ss_distance: 19
+diff: 47
+
+rr_distance: 52
+ss_distance: 18
+diff: 34
+
+rr_distance: 52
+ss_distance: 19
+diff: 33
+
+rr_distance: 53
+ss_distance: 17
+diff: 36
+
+BP: 135, sum_ptt_ppg: 0.60, ppg_is_high: 1 
+**************************************************
+rr_distance: 54
+ss_distance: 18
+diff: 36
+
+rr_distance: 74
+ss_distance: 20
+diff: 54
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 49
+ss_distance: 20
+diff: 29
+
+rr_distance: 50
+ss_distance: 21
+diff: 29
+
+BP: 125, sum_ptt_ppg: 0.52, ppg_is_high: 1 
+**************************************************
+rr_distance: 42
+ss_distance: 13
+diff: 29
+
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+rr_distance: 62
+ss_distance: 17
+diff: 45
+
+rr_distance: 41
+ss_distance: 29
+diff: 12
+
+rr_distance: 43
+ss_distance: 10
+diff: 33
+
+rr_distance: 42
+ss_distance: 20
+diff: 22
+
+BP: 140, sum_ptt_ppg: 0.69, ppg_is_high: 1 
+**************************************************
+rr_distance: 47
+ss_distance: 17
+diff: 30
+
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+rr_distance: 43
+ss_distance: 17
+diff: 26
+
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+rr_distance: 46
+ss_distance: 17
+diff: 29
+
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+rr_distance: 45
+ss_distance: 17
+diff: 28
+
+BP: 104, sum_ptt_ppg: 0.27, ppg_is_high: 0 
+**************************************************
+rr_distance: -6
+ss_distance: 18
+diff: -24
+
+rr_distance: 13
+ss_distance: 22
+diff: -9
+
+rr_distance: 3
+ss_distance: 20
+diff: -17
+
+rr_distance: 11
+ss_distance: 20
+diff: -9
+
+rr_distance: 14
+ss_distance: 18
+diff: -4
+
+rr_distance: 8
+ss_distance: 14
+diff: -6
+
+BP: 108, sum_ptt_ppg: 0.39, ppg_is_high: 0 
+**************************************************
+rr_distance: 45
+ss_distance: 18
+diff: 27
+
+rr_distance: 45
+ss_distance: 17
+diff: 28
+
+rr_distance: 26
+ss_distance: 19
+diff: 7
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 50
+ss_distance: 19
+diff: 31
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+BP: 102, sum_ptt_ppg: 0.30, ppg_is_high: 0 
+**************************************************
+rr_distance: 42
+ss_distance: 14
+diff: 28
+
+rr_distance: 42
+ss_distance: 13
+diff: 29
+
+rr_distance: 55
+ss_distance: 14
+diff: 41
+
+rr_distance: 40
+ss_distance: 13
+diff: 27
+
+rr_distance: 43
+ss_distance: 14
+diff: 29
+
+rr_distance: 41
+ss_distance: 13
+diff: 28
+
+rr_distance: 42
+ss_distance: 14
+diff: 28
+
+BP: 105, sum_ptt_ppg: 0.49, ppg_is_high: 1 
+**************************************************
+rr_distance: 44
+ss_distance: 13
+diff: 31
+
+rr_distance: 53
+ss_distance: 14
+diff: 39
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 45
+ss_distance: 14
+diff: 31
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+BP: 104, sum_ptt_ppg: 0.44, ppg_is_high: 0 
+**************************************************
+rr_distance: 54
+ss_distance: 19
+diff: 35
+
+rr_distance: 39
+ss_distance: 19
+diff: 20
+
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+rr_distance: 50
+ss_distance: 18
+diff: 32
+
+rr_distance: 51
+ss_distance: 18
+diff: 33
+
+rr_distance: 50
+ss_distance: 19
+diff: 31
+
+BP: 101, sum_ptt_ppg: 0.32, ppg_is_high: 0 
+**************************************************
+rr_distance: 43
+ss_distance: 14
+diff: 29
+
+rr_distance: 41
+ss_distance: 13
+diff: 28
+
+rr_distance: 46
+ss_distance: 14
+diff: 32
+
+rr_distance: 39
+ss_distance: 13
+diff: 26
+
+rr_distance: 38
+ss_distance: 13
+diff: 25
+
+rr_distance: 38
+ss_distance: 13
+diff: 25
+
+rr_distance: 38
+ss_distance: 13
+diff: 25
+
+rr_distance: 36
+ss_distance: 13
+diff: 23
+
+BP: 110, sum_ptt_ppg: 0.45, ppg_is_high: 0 
+**************************************************
+rr_distance: 38
+ss_distance: 14
+diff: 24
+
+rr_distance: 66
+ss_distance: 13
+diff: 53
+
+rr_distance: 79
+ss_distance: 14
+diff: 65
+
+rr_distance: 40
+ss_distance: 13
+diff: 27
+
+BP: 131, sum_ptt_ppg: 0.32, ppg_is_high: 1 
+**************************************************
+rr_distance: 48
+ss_distance: 19
+diff: 29
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 56
+ss_distance: 20
+diff: 36
+
+rr_distance: 52
+ss_distance: 18
+diff: 34
+
+rr_distance: 53
+ss_distance: 17
+diff: 36
+
+rr_distance: 48
+ss_distance: 18
+diff: 30
+
+BP: 90, sum_ptt_ppg: 0.20, ppg_is_high: 0 
+**************************************************
+rr_distance: 122
+ss_distance: 22
+diff: 100
+
+rr_distance: 58
+ss_distance: 18
+diff: 40
+
+rr_distance: 55
+ss_distance: 21
+diff: 34
+
+BP: 100, sum_ptt_ppg: 0.72, ppg_is_high: 1 
+**************************************************
+rr_distance: 58
+ss_distance: 20
+diff: 38
+
+rr_distance: 71
+ss_distance: 21
+diff: 50
+
+rr_distance: 58
+ss_distance: 22
+diff: 36
+
+rr_distance: 59
+ss_distance: 18
+diff: 41
+
+rr_distance: 58
+ss_distance: 22
+diff: 36
+
+BP: 150, sum_ptt_ppg: 0.66, ppg_is_high: 1 
+**************************************************
+rr_distance: 48
+ss_distance: 19
+diff: 29
+
+rr_distance: 47
+ss_distance: 17
+diff: 30
+
+rr_distance: 47
+ss_distance: 18
+diff: 29
+
+rr_distance: 47
+ss_distance: 18
+diff: 29
+
+rr_distance: 92
+ss_distance: 17
+diff: 75
+
+BP: 117, sum_ptt_ppg: 0.34, ppg_is_high: 1 
+**************************************************
+rr_distance: 69
+ss_distance: 18
+diff: 51
+
+rr_distance: 50
+ss_distance: 19
+diff: 31
+
+rr_distance: 50
+ss_distance: 18
+diff: 32
+
+BP: 96, sum_ptt_ppg: 0.40, ppg_is_high: 1 
+**************************************************
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+rr_distance: 80
+ss_distance: 17
+diff: 63
+
+rr_distance: 44
+ss_distance: 15
+diff: 29
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+rr_distance: 42
+ss_distance: 31
+diff: 11
+
+BP: 131, sum_ptt_ppg: 0.60, ppg_is_high: 1 
+**************************************************
+rr_distance: 39
+ss_distance: 11
+diff: 28
+
+rr_distance: 40
+ss_distance: 14
+diff: 26
+
+rr_distance: 94
+ss_distance: 13
+diff: 81
+
+rr_distance: 40
+ss_distance: 12
+diff: 28
+
+rr_distance: 40
+ss_distance: 14
+diff: 26
+
+rr_distance: 37
+ss_distance: 12
+diff: 25
+
+BP: 112, sum_ptt_ppg: 0.37, ppg_is_high: 1 
+**************************************************
+rr_distance: 44
+ss_distance: 14
+diff: 30
+
+rr_distance: 44
+ss_distance: 17
+diff: 27
+
+rr_distance: 39
+ss_distance: 15
+diff: 24
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 44
+ss_distance: 15
+diff: 29
+
+rr_distance: 44
+ss_distance: 15
+diff: 29
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+BP: 130, sum_ptt_ppg: 0.52, ppg_is_high: 0 
+**************************************************
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 46
+ss_distance: 18
+diff: 28
+
+rr_distance: 35
+ss_distance: 17
+diff: 18
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 47
+ss_distance: 19
+diff: 28
+
+rr_distance: 48
+ss_distance: 18
+diff: 30
+
+BP: 89, sum_ptt_ppg: 0.36, ppg_is_high: 0 
+**************************************************
+rr_distance: 52
+ss_distance: 17
+diff: 35
+
+rr_distance: 37
+ss_distance: 16
+diff: 21
+
+rr_distance: 52
+ss_distance: 17
+diff: 35
+
+rr_distance: 49
+ss_distance: 17
+diff: 32
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+BP: 128, sum_ptt_ppg: 0.22, ppg_is_high: 0 
+**************************************************
+rr_distance: 40
+ss_distance: 13
+diff: 27
+
+rr_distance: 39
+ss_distance: 15
+diff: 24
+
+rr_distance: 58
+ss_distance: 13
+diff: 45
+
+rr_distance: 41
+ss_distance: 13
+diff: 28
+
+rr_distance: 40
+ss_distance: 13
+diff: 27
+
+rr_distance: 39
+ss_distance: 15
+diff: 24
+
+rr_distance: 39
+ss_distance: 28
+diff: 11
+
+BP: 106, sum_ptt_ppg: 0.57, ppg_is_high: 1 
+**************************************************
+rr_distance: 49
+ss_distance: 16
+diff: 33
+
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+rr_distance: 35
+ss_distance: 17
+diff: 18
+
+rr_distance: 42
+ss_distance: 17
+diff: 25
+
+rr_distance: 47
+ss_distance: 17
+diff: 30
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+BP: 188, sum_ptt_ppg: 0.17, ppg_is_high: 0 
+**************************************************
+rr_distance: 52
+ss_distance: 18
+diff: 34
+
+rr_distance: 119
+ss_distance: 17
+diff: 102
+
+rr_distance: 53
+ss_distance: 18
+diff: 35
+
+rr_distance: 52
+ss_distance: 19
+diff: 33
+
+BP: 117, sum_ptt_ppg: 0.34, ppg_is_high: 1 
+**************************************************
+rr_distance: 65
+ss_distance: 23
+diff: 42
+
+rr_distance: 49
+ss_distance: 23
+diff: 26
+
+rr_distance: 59
+ss_distance: 22
+diff: 37
+
+rr_distance: 58
+ss_distance: 21
+diff: 37
+
+BP: 117, sum_ptt_ppg: 0.66, ppg_is_high: 1 
+**************************************************
+rr_distance: 45
+ss_distance: 15
+diff: 30
+
+rr_distance: 80
+ss_distance: 15
+diff: 65
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 46
+ss_distance: 15
+diff: 31
+
+rr_distance: 46
+ss_distance: 17
+diff: 29
+
+BP: 115, sum_ptt_ppg: 0.42, ppg_is_high: 1 
+**************************************************
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+rr_distance: 69
+ss_distance: 17
+diff: 52
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 48
+ss_distance: 18
+diff: 30
+
+rr_distance: 49
+ss_distance: 16
+diff: 33
+
+BP: 98, sum_ptt_ppg: 0.14, ppg_is_high: 1 
+**************************************************
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+rr_distance: 43
+ss_distance: 17
+diff: 26
+
+rr_distance: 45
+ss_distance: 17
+diff: 28
+
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+rr_distance: 46
+ss_distance: 17
+diff: 29
+
+BP: 102, sum_ptt_ppg: 0.14, ppg_is_high: 0 
+**************************************************
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+rr_distance: 51
+ss_distance: 19
+diff: 32
+
+rr_distance: 52
+ss_distance: 17
+diff: 35
+
+rr_distance: 50
+ss_distance: 19
+diff: 31
+
+BP: 147, sum_ptt_ppg: 0.00, ppg_is_high: 0 
+**************************************************
+rr_distance: -8
+ss_distance: 17
+diff: -25
+
+rr_distance: 18
+ss_distance: 17
+diff: 1
+
+rr_distance: 8
+ss_distance: 19
+diff: -11
+
+rr_distance: 5
+ss_distance: 17
+diff: -12
+
+rr_distance: 17
+ss_distance: 19
+diff: -2
+
+rr_distance: 1
+ss_distance: 19
+diff: -18
+
+BP: 119, sum_ptt_ppg: 0.36, ppg_is_high: 0 
+**************************************************
+rr_distance: 62
+ss_distance: 22
+diff: 40
+
+rr_distance: 76
+ss_distance: 22
+diff: 54
+
+rr_distance: 65
+ss_distance: 21
+diff: 44
+
+rr_distance: 61
+ss_distance: 20
+diff: 41
+
+BP: 119, sum_ptt_ppg: 0.22, ppg_is_high: 1 
+**************************************************
+rr_distance: 46
+ss_distance: 17
+diff: 29
+
+rr_distance: 45
+ss_distance: 17
+diff: 28
+
+rr_distance: 47
+ss_distance: 17
+diff: 30
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+rr_distance: 47
+ss_distance: 15
+diff: 32
+
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+BP: 120, sum_ptt_ppg: 0.28, ppg_is_high: 0 
+**************************************************
+rr_distance: 44
+ss_distance: 13
+diff: 31
+
+rr_distance: 45
+ss_distance: 13
+diff: 32
+
+rr_distance: 61
+ss_distance: 14
+diff: 47
+
+rr_distance: 43
+ss_distance: 16
+diff: 27
+
+rr_distance: 42
+ss_distance: 14
+diff: 28
+
+rr_distance: 43
+ss_distance: 14
+diff: 29
+
+BP: 124, sum_ptt_ppg: 0.27, ppg_is_high: 1 
+**************************************************
+rr_distance: 51
+ss_distance: 17
+diff: 34
+
+rr_distance: 83
+ss_distance: 19
+diff: 64
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 52
+ss_distance: 16
+diff: 36
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+BP: 120, sum_ptt_ppg: 0.20, ppg_is_high: 1 
+**************************************************
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 32
+ss_distance: 15
+diff: 17
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 44
+ss_distance: 15
+diff: 29
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+BP: 130, sum_ptt_ppg: 0.25, ppg_is_high: 0 
+**************************************************
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 28
+ss_distance: 20
+diff: 8
+
+rr_distance: 48
+ss_distance: 18
+diff: 30
+
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+BP: 108, sum_ptt_ppg: 0.18, ppg_is_high: 0 
+**************************************************
+rr_distance: 50
+ss_distance: 21
+diff: 29
+
+rr_distance: 49
+ss_distance: 20
+diff: 29
+
+rr_distance: 28
+ss_distance: 19
+diff: 9
+
+rr_distance: 52
+ss_distance: 20
+diff: 32
+
+rr_distance: 54
+ss_distance: 19
+diff: 35
+
+rr_distance: 51
+ss_distance: 19
+diff: 32
+
+BP: 110, sum_ptt_ppg: 0.31, ppg_is_high: 0 
+**************************************************
+rr_distance: 43
+ss_distance: 14
+diff: 29
+
+rr_distance: 42
+ss_distance: 16
+diff: 26
+
+rr_distance: 61
+ss_distance: 15
+diff: 46
+
+rr_distance: 42
+ss_distance: 15
+diff: 27
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+BP: 110, sum_ptt_ppg: 0.16, ppg_is_high: 1 
+**************************************************
+rr_distance: 49
+ss_distance: 15
+diff: 34
+
+rr_distance: 65
+ss_distance: 17
+diff: 48
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 49
+ss_distance: 16
+diff: 33
+
+BP: 174, sum_ptt_ppg: 0.28, ppg_is_high: 1 
+**************************************************
+rr_distance: 143
+ss_distance: 20
+diff: 123
+
+rr_distance: 100
+ss_distance: 11
+diff: 89
+
+rr_distance: 52
+ss_distance: 24
+diff: 28
+
+BP: 101, sum_ptt_ppg: 0.12, ppg_is_high: 1 
+**************************************************
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+rr_distance: 37
+ss_distance: 15
+diff: 22
+
+rr_distance: 42
+ss_distance: 15
+diff: 27
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+BP: 140, sum_ptt_ppg: 0.36, ppg_is_high: 0 
+**************************************************
+rr_distance: 48
+ss_distance: 18
+diff: 30
+
+rr_distance: 46
+ss_distance: 18
+diff: 28
+
+rr_distance: 46
+ss_distance: 19
+diff: 27
+
+rr_distance: 93
+ss_distance: 19
+diff: 74
+
+rr_distance: 47
+ss_distance: 20
+diff: 27
+
+rr_distance: 47
+ss_distance: 15
+diff: 32
+
+BP: 95, sum_ptt_ppg: 0.13, ppg_is_high: 1 
+**************************************************
+rr_distance: 33
+ss_distance: 12
+diff: 21
+
+rr_distance: 33
+ss_distance: 11
+diff: 22
+
+rr_distance: 33
+ss_distance: 12
+diff: 21
+
+rr_distance: 27
+ss_distance: 11
+diff: 16
+
+rr_distance: 32
+ss_distance: 13
+diff: 19
+
+rr_distance: 33
+ss_distance: 11
+diff: 22
+
+rr_distance: 33
+ss_distance: 12
+diff: 21
+
+rr_distance: 33
+ss_distance: 12
+diff: 21
+
+rr_distance: 32
+ss_distance: 12
+diff: 20
+
+BP: 150, sum_ptt_ppg: 0.28, ppg_is_high: 0 
+**************************************************
+rr_distance: 53
+ss_distance: 16
+diff: 37
+
+rr_distance: 42
+ss_distance: 18
+diff: 24
+
+rr_distance: 50
+ss_distance: 20
+diff: 30
+
+rr_distance: 106
+ss_distance: 19
+diff: 87
+
+BP: 115, sum_ptt_ppg: 0.42, ppg_is_high: 1 
+**************************************************
+rr_distance: 108
+ss_distance: 17
+diff: 91
+
+rr_distance: 69
+ss_distance: 19
+diff: 50
+
+rr_distance: 53
+ss_distance: 18
+diff: 35
+
+rr_distance: 53
+ss_distance: 18
+diff: 35
+
+rr_distance: 52
+ss_distance: 19
+diff: 33
+
+BP: 93, sum_ptt_ppg: 0.44, ppg_is_high: 1 
+**************************************************
+rr_distance: 75
+ss_distance: 25
+diff: 50
+
+rr_distance: 58
+ss_distance: 21
+diff: 37
+
+rr_distance: 57
+ss_distance: 21
+diff: 36
+
+rr_distance: 58
+ss_distance: 21
+diff: 37
+
+BP: 114, sum_ptt_ppg: 0.48, ppg_is_high: 1 
+**************************************************
+rr_distance: 46
+ss_distance: 15
+diff: 31
+
+rr_distance: 45
+ss_distance: 15
+diff: 30
+
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 47
+ss_distance: 15
+diff: 32
+
+rr_distance: 48
+ss_distance: 15
+diff: 33
+
+rr_distance: 46
+ss_distance: 15
+diff: 31
+
+BP: 103, sum_ptt_ppg: 0.20, ppg_is_high: 0 
+**************************************************
+rr_distance: 37
+ss_distance: 15
+diff: 22
+
+rr_distance: 35
+ss_distance: 13
+diff: 22
+
+rr_distance: 61
+ss_distance: 15
+diff: 46
+
+rr_distance: 37
+ss_distance: 13
+diff: 24
+
+rr_distance: 38
+ss_distance: 13
+diff: 25
+
+rr_distance: 38
+ss_distance: 13
+diff: 25
+
+rr_distance: 37
+ss_distance: 13
+diff: 24
+
+BP: 138, sum_ptt_ppg: 0.28, ppg_is_high: 1 
+**************************************************
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+rr_distance: 70
+ss_distance: 15
+diff: 55
+
+rr_distance: 42
+ss_distance: 14
+diff: 28
+
+rr_distance: 42
+ss_distance: 15
+diff: 27
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+BP: 104, sum_ptt_ppg: 0.16, ppg_is_high: 1 
+**************************************************
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 85
+ss_distance: 18
+diff: 67
+
+rr_distance: 52
+ss_distance: 18
+diff: 34
+
+rr_distance: 52
+ss_distance: 18
+diff: 34
+
+BP: 145, sum_ptt_ppg: 0.44, ppg_is_high: 1 
+**************************************************
+rr_distance: 49
+ss_distance: 14
+diff: 35
+
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+rr_distance: 23
+ss_distance: 18
+diff: 5
+
+rr_distance: 50
+ss_distance: 18
+diff: 32
+
+rr_distance: 107
+ss_distance: 19
+diff: 88
+
+rr_distance: 54
+ss_distance: 19
+diff: 35
+
+BP: 101, sum_ptt_ppg: 0.39, ppg_is_high: 1 
+**************************************************
+rr_distance: 61
+ss_distance: 21
+diff: 40
+
+rr_distance: 20
+ss_distance: 19
+diff: 1
+
+rr_distance: 54
+ss_distance: 18
+diff: 36
+
+rr_distance: 131
+ss_distance: 17
+diff: 114
+
+BP: 119, sum_ptt_ppg: 0.16, ppg_is_high: 1 
+**************************************************
+rr_distance: 61
+ss_distance: 21
+diff: 40
+
+rr_distance: 112
+ss_distance: 20
+diff: 92
+
+rr_distance: 61
+ss_distance: 21
+diff: 40
+
+BP: 167, sum_ptt_ppg: 0.44, ppg_is_high: 1 
+**************************************************
+rr_distance: 223
+ss_distance: 14
+diff: 209
+
+BP: 110, sum_ptt_ppg: 0.12, ppg_is_high: 1 
+**************************************************
+rr_distance: 55
+ss_distance: 19
+diff: 36
+
+rr_distance: 54
+ss_distance: 17
+diff: 37
+
+rr_distance: 55
+ss_distance: 17
+diff: 38
+
+rr_distance: 53
+ss_distance: 18
+diff: 35
+
+BP: 152, sum_ptt_ppg: 0.42, ppg_is_high: 0 
+**************************************************
+rr_distance: 106
+ss_distance: 15
+diff: 91
+
+rr_distance: 37
+ss_distance: 12
+diff: 25
+
+rr_distance: 74
+ss_distance: 14
+diff: 60
+
+rr_distance: 37
+ss_distance: 12
+diff: 25
+
+BP: 84, sum_ptt_ppg: 0.32, ppg_is_high: 1 
+**************************************************
+rr_distance: 38
+ss_distance: 14
+diff: 24
+
+rr_distance: 37
+ss_distance: 20
+diff: 17
+
+rr_distance: 36
+ss_distance: 19
+diff: 17
+
+rr_distance: 27
+ss_distance: 13
+diff: 14
+
+rr_distance: 37
+ss_distance: 15
+diff: 22
+
+rr_distance: 37
+ss_distance: 13
+diff: 24
+
+rr_distance: 37
+ss_distance: 14
+diff: 23
+
+rr_distance: 37
+ss_distance: 13
+diff: 24
+
+BP: 104, sum_ptt_ppg: 0.34, ppg_is_high: 0 
+**************************************************
+rr_distance: 49
+ss_distance: 18
+diff: 31
+
+rr_distance: 82
+ss_distance: 17
+diff: 65
+
+rr_distance: 50
+ss_distance: 17
+diff: 33
+
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+rr_distance: 47
+ss_distance: 17
+diff: 30
+
+BP: 166, sum_ptt_ppg: 0.56, ppg_is_high: 1 
+**************************************************
+rr_distance: 43
+ss_distance: 16
+diff: 27
+
+rr_distance: 42
+ss_distance: 15
+diff: 27
+
+rr_distance: 39
+ss_distance: 17
+diff: 22
+
+rr_distance: 45
+ss_distance: 15
+diff: 30
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+BP: 169, sum_ptt_ppg: 0.14, ppg_is_high: 0 
+**************************************************
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+rr_distance: 61
+ss_distance: 15
+diff: 46
+
+rr_distance: 43
+ss_distance: 14
+diff: 29
+
+rr_distance: 42
+ss_distance: 15
+diff: 27
+
+rr_distance: 82
+ss_distance: 15
+diff: 67
+
+BP: 146, sum_ptt_ppg: 0.20, ppg_is_high: 1 
+**************************************************
+rr_distance: 45
+ss_distance: 17
+diff: 28
+
+rr_distance: 95
+ss_distance: 17
+diff: 78
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 48
+ss_distance: 17
+diff: 31
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+BP: 105, sum_ptt_ppg: 0.30, ppg_is_high: 1 
+**************************************************
+rr_distance: 44
+ss_distance: 17
+diff: 27
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 44
+ss_distance: 17
+diff: 27
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+rr_distance: 42
+ss_distance: 15
+diff: 27
+
+rr_distance: 41
+ss_distance: 17
+diff: 24
+
+BP: 113, sum_ptt_ppg: 0.31, ppg_is_high: 0 
+**************************************************
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 81
+ss_distance: 13
+diff: 68
+
+rr_distance: 174
+ss_distance: 15
+diff: 159
+
+BP: 153, sum_ptt_ppg: 0.42, ppg_is_high: 1 
+**************************************************
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+rr_distance: 43
+ss_distance: 14
+diff: 29
+
+rr_distance: 40
+ss_distance: 14
+diff: 26
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 42
+ss_distance: 14
+diff: 28
+
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+BP: 99, sum_ptt_ppg: 0.43, ppg_is_high: 0 
+**************************************************
+rr_distance: 45
+ss_distance: 17
+diff: 28
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 34
+ss_distance: 15
+diff: 19
+
+rr_distance: 47
+ss_distance: 18
+diff: 29
+
+rr_distance: 49
+ss_distance: 15
+diff: 34
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+BP: 135, sum_ptt_ppg: 0.32, ppg_is_high: 0 
+**************************************************
+rr_distance: 180
+ss_distance: 35
+diff: 145
+
+rr_distance: 93
+ss_distance: 15
+diff: 78
+
+BP: 114, sum_ptt_ppg: 0.60, ppg_is_high: 1 
+**************************************************
+rr_distance: 43
+ss_distance: 18
+diff: 25
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 22
+ss_distance: 19
+diff: 3
+
+rr_distance: 45
+ss_distance: 16
+diff: 29
+
+rr_distance: 48
+ss_distance: 16
+diff: 32
+
+rr_distance: 47
+ss_distance: 16
+diff: 31
+
+BP: 106, sum_ptt_ppg: 0.20, ppg_is_high: 0 
+**************************************************
+rr_distance: 36
+ss_distance: 18
+diff: 18
+
+rr_distance: 48
+ss_distance: 19
+diff: 29
+
+rr_distance: 51
+ss_distance: 16
+diff: 35
+
+rr_distance: 51
+ss_distance: 18
+diff: 33
+
+BP: 112, sum_ptt_ppg: 0.52, ppg_is_high: 0 
+**************************************************
+rr_distance: 51
+ss_distance: 20
+diff: 31
+
+rr_distance: 59
+ss_distance: 20
+diff: 39
+
+rr_distance: 56
+ss_distance: 20
+diff: 36
+
+rr_distance: 57
+ss_distance: 20
+diff: 37
+
+rr_distance: 53
+ss_distance: 22
+diff: 31
+
+BP: 128, sum_ptt_ppg: 0.46, ppg_is_high: 0 
+**************************************************
+rr_distance: 51
+ss_distance: 19
+diff: 32
+
+rr_distance: 62
+ss_distance: 17
+diff: 45
+
+rr_distance: 49
+ss_distance: 17
+diff: 32
+
+rr_distance: 46
+ss_distance: 16
+diff: 30
+
+rr_distance: 46
+ss_distance: 17
+diff: 29
+
+rr_distance: 47
+ss_distance: 18
+diff: 29
+
+BP: 112, sum_ptt_ppg: 0.26, ppg_is_high: 1 
+**************************************************
+rr_distance: 40
+ss_distance: 14
+diff: 26
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 57
+ss_distance: 14
+diff: 43
+
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+rr_distance: 39
+ss_distance: 14
+diff: 25
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+BP: 150, sum_ptt_ppg: 0.32, ppg_is_high: 1 
+**************************************************
+rr_distance: 54
+ss_distance: 15
+diff: 39
+
+rr_distance: 59
+ss_distance: 17
+diff: 42
+
+rr_distance: 53
+ss_distance: 18
+diff: 35
+
+rr_distance: 55
+ss_distance: 15
+diff: 40
+
+rr_distance: 54
+ss_distance: 15
+diff: 39
+
+BP: 133, sum_ptt_ppg: 0.16, ppg_is_high: 1 
+**************************************************
+rr_distance: 58
+ss_distance: 23
+diff: 35
+
+rr_distance: 58
+ss_distance: 21
+diff: 37
+
+rr_distance: 60
+ss_distance: 20
+diff: 40
+
+rr_distance: 61
+ss_distance: 21
+diff: 40
+
+BP: 92, sum_ptt_ppg: 0.34, ppg_is_high: 0 
+**************************************************
+rr_distance: 40
+ss_distance: 14
+diff: 26
+
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+rr_distance: 40
+ss_distance: 12
+diff: 28
+
+rr_distance: 41
+ss_distance: 12
+diff: 29
+
+rr_distance: 41
+ss_distance: 13
+diff: 28
+
+rr_distance: 40
+ss_distance: 15
+diff: 25
+
+rr_distance: 39
+ss_distance: 14
+diff: 25
+
+BP: 117, sum_ptt_ppg: 0.39, ppg_is_high: 0 
+**************************************************
+rr_distance: 41
+ss_distance: 17
+diff: 24
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 74
+ss_distance: 15
+diff: 59
+
+rr_distance: 43
+ss_distance: 16
+diff: 27
+
+rr_distance: 42
+ss_distance: 16
+diff: 26
+
+rr_distance: 41
+ss_distance: 15
+diff: 26
+
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+BP: 122, sum_ptt_ppg: 0.40, ppg_is_high: 1 
+**************************************************
+rr_distance: 63
+ss_distance: 22
+diff: 41
+
+rr_distance: 67
+ss_distance: 21
+diff: 46
+
+rr_distance: 66
+ss_distance: 20
+diff: 46
+
+rr_distance: 67
+ss_distance: 25
+diff: 42
+
+rr_distance: 66
+ss_distance: 24
+diff: 42
+
+BP: 132, sum_ptt_ppg: 0.62, ppg_is_high: 1 
+**************************************************
+rr_distance: 57
+ss_distance: 20
+diff: 37
+
+rr_distance: 31
+ss_distance: 20
+diff: 11
+
+rr_distance: 56
+ss_distance: 20
+diff: 36
+
+rr_distance: 56
+ss_distance: 19
+diff: 37
+
+rr_distance: 56
+ss_distance: 19
+diff: 37
+
+BP: 141, sum_ptt_ppg: 0.42, ppg_is_high: 0 
+**************************************************
+rr_distance: 44
+ss_distance: 15
+diff: 29
+
+rr_distance: 43
+ss_distance: 15
+diff: 28
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+rr_distance: 44
+ss_distance: 15
+diff: 29
+
+rr_distance: 44
+ss_distance: 16
+diff: 28
+
+BP: 125, sum_ptt_ppg: 0.36, ppg_is_high: 0 
+**************************************************
+rr_distance: 60
+ss_distance: 22
+diff: 38
+
+rr_distance: 52
+ss_distance: 19
+diff: 33
+
+rr_distance: 60
+ss_distance: 21
+diff: 39
+
+rr_distance: 54
+ss_distance: 23
+diff: 31
+
+rr_distance: 50
+ss_distance: 24
+diff: 26
+
+BP: 116, sum_ptt_ppg: 0.66, ppg_is_high: 0 
+**************************************************
+rr_distance: 61
+ss_distance: 20
+diff: 41
+
+rr_distance: 53
+ss_distance: 19
+diff: 34
+
+rr_distance: 50
+ss_distance: 19
+diff: 31
+
+rr_distance: 55
+ss_distance: 18
+diff: 37
+
+BP: 124, sum_ptt_ppg: 0.44, ppg_is_high: 1 
+**************************************************
+rr_distance: -311
+ss_distance: 15
+diff: -326
+
+rr_distance: 6
+ss_distance: 14
+diff: -8
+
+rr_distance: 16
+ss_distance: 15
+diff: 1
+
+rr_distance: 1
+ss_distance: 16
+diff: -15
+
+rr_distance: 18
+ss_distance: 18
+diff: 0
+
+rr_distance: 8
+ss_distance: 16
+diff: -8
+
+BP: 113, sum_ptt_ppg: 0.34, ppg_is_high: 0 
+**************************************************
+rr_distance: 50
+ss_distance: 20
+diff: 30
+
+rr_distance: 50
+ss_distance: 18
+diff: 32
+
+rr_distance: 38
+ss_distance: 17
+diff: 21
+
+rr_distance: 51
+ss_distance: 19
+diff: 32
+
+rr_distance: 51
+ss_distance: 18
+diff: 33
+
+rr_distance: 52
+ss_distance: 18
+diff: 34
+
+BP: 102, sum_ptt_ppg: 0.40, ppg_is_high: 0 
+**************************************************
+rr_distance: 65
+ss_distance: 21
+diff: 44
+
+rr_distance: 58
+ss_distance: 21
+diff: 37
+
+rr_distance: 26
+ss_distance: 22
+diff: 4
+
+rr_distance: 61
+ss_distance: 23
+diff: 38
+
+rr_distance: 62
+ss_distance: 19
+diff: 43
+
+BP: 97, sum_ptt_ppg: 0.64, ppg_is_high: 1 
+**************************************************
+rr_distance: 51
+ss_distance: 18
+diff: 33
+
+rr_distance:File 'ptt_calculation.dll' has been deleted.
+*** CODE ENDS HERE ***
+ 51
+ss_distance: 18
+diff: 33
+
+rr_distance: 46
+ss_distance: 18
+diff: 28
+
+rr_distance: 51
+ss_distance: 17
+diff: 34
+
+rr_distance: 51
+ss_distance: 18
+diff: 33
+
+rr_distance: 49
+ss_distance: 17
+diff: 32
+
+BP: 169, sum_ptt_ppg: 0.11, ppg_is_high: 0 
+**************************************************
+rr_distance: 44
+ss_distance: 13
+diff: 31
+
+rr_distance: 42
+ss_distance: 16
+diff: 26
+
+rr_distance: 59
+ss_distance: 13
+diff: 46
+
+rr_distance: 44
+ss_distance: 17
+diff: 27
+
+rr_distance: 46
+ss_distance: 14
+diff: 32
+
+rr_distance: 41
+ss_distance: 14
+diff: 27
+
+BP: 99, sum_ptt_ppg: 0.26, ppg_is_high: 1 
+**************************************************

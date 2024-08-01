@@ -1926,75 +1926,77 @@ int compare_doubles(const void *a, const void *b)
     return 0;
 }
 
-double get_ptt(int r_peaks[], int systolic_peaks[], int num_r_peaks, int num_systolic_peaks, double fs)
+double get_ptt(int r_peaks[], int systolic_peaks[], int num_r_peaks, int num_systolic_peaks, double fs, int max_index_local)
 {
     double sum_ptt = 0;
     int valid_pairs = 0;
-    int distance_store[1000];
-    for (int i = 0; i < 1000; i++)
-    {
-        distance_store[i] = -1;
-    }
-    int distance_store_index = 0;
-    // double big_min = INFINITY;
+
     for (int i = 0; i < num_r_peaks; i++)
     {
-
-        if (r_peaks[i] < 0)
+        int r_peak = r_peaks[i];
+        if (r_peak < 0)
         {
             continue;
         }
 
-        int closest_r_peak = -1;
+        int closest_systolic_peak = -1;
         double min_distance = INFINITY;
-        // int min_distance = 10000;
+
         for (int j = 0; j < num_systolic_peaks; j++)
         {
-            if (systolic_peaks[j] < 0)
+            int s_peak = systolic_peaks[j];
+            if (s_peak < 0)
             {
                 continue;
             }
 
-            int distance_limitor = max_peak(systolic_peaks[j], r_peaks[i]) - min_peak(systolic_peaks[j], r_peaks[i]);
-            double distance = (distance_limitor / fs);
-
-            if (distance < min_distance)
+            if (s_peak > r_peak)
             {
+                double distance = (s_peak - r_peak) / fs; // Convert sample difference to time
 
-                if (distance_store[distance_store_index] != -1)
+                if (distance < min_distance)
                 {
-                    distance_store[distance_store_index] = min_peak(distance_store[distance_store_index], distance_limitor);
+                    min_distance = distance;
+                    closest_systolic_peak = s_peak;
                 }
-                else
-                {
-                    distance_store[distance_store_index] = distance_limitor;
-                }
-                min_distance = distance;
-                closest_r_peak = j;
             }
         }
-        distance_store_index++;
-        if (closest_r_peak != -1)
+
+        if (closest_systolic_peak != -1)
         {
             valid_pairs++;
             sum_ptt += min_distance;
         }
     }
 
-    // for (int i = 0; i < distance_store_index; i++)
-    // {
-    //     printf("%d,", distance_store[i]);
-    // }
-
-    // print_new_lines();
-
-    if (valid_pairs)
+    // Calculate average PTT
+    if (valid_pairs > 0)
     {
-        sum_ptt /= valid_pairs;
+        return sum_ptt / valid_pairs;
     }
-
     return sum_ptt;
 }
+
+double calculate_mean(int arr[], int size)
+{
+    double sum = 0;
+    for (int i = 0; i < size; i++)
+    {
+        sum += arr[i];
+    }
+    return sum / size;
+}
+
+double calculate_std_dev(int arr[], int size, double mean)
+{
+    double sum = 0;
+    for (int i = 0; i < size; i++)
+    {
+        sum += pow(arr[i] - mean, 2);
+    }
+    return sqrt(sum / size);
+}
+
 double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int ppg_len, int r_peaks[], int systolic_peaks[], int *num_r_peaks, int *num_systolic_peaks, double ecg_filt[], double ppg_filt[], int bp)
 {
 
@@ -2022,6 +2024,37 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
 
     double consecutive_diff = 0.0;
     int num_pulse = 5;
+    int greater_than_40 = 0;
+    int min_actual_length = min(*num_r_peaks, *num_systolic_peaks);
+    int diff_r_store[min_actual_length];
+
+    for (int i = 1; i < min_actual_length; i++)
+    {
+        int rr_distance = (r_peaks[i] - r_peaks[i - 1]);
+        int ss_distance = (systolic_peaks[i] - systolic_peaks[i - 1]);
+        diff_r_store[i - 1] = rr_distance;
+
+        int diff = rr_distance - ss_distance;
+        if (diff > 40)
+        {
+            greater_than_40++;
+        }
+        printf("rr_distance: %d\n", rr_distance);
+        printf("ss_distance: %d\n", ss_distance);
+        printf("diff: %d\n", diff);
+        printf("\n");
+    }
+    int max_index_local = -1, max_val_local = 0;
+    for (int i = 0; i < min_actual_length - 1; i++)
+    {
+        if (diff_r_store[i] > max_val_local)
+        {
+            max_val_local = diff_r_store[i];
+            max_index_local = i;
+        }
+    }
+    printf("Outlier: %d, index: %d\n", max_val_local, max_index_local);
+
     int store_ratio[num_pulse];
     for (int i = 0; i < num_pulse; i++)
     {
@@ -2036,7 +2069,7 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
         int loc_diff = (store_ratio[i] - store_ratio[i - 1]);
         diff_30 += (loc_diff <= allowed_limit);
     }
-    double sum_ptt_ppg = get_ptt(r_peaks, systolic_peaks, *num_r_peaks, *num_systolic_peaks, fs_ppg);
+    double sum_ptt_ppg = get_ptt(r_peaks, systolic_peaks, *num_r_peaks, *num_systolic_peaks, fs_ppg, max_index_local);
 
     // double sum_ptt_ecg = get_ptt(r_peaks, systolic_peaks, *num_r_peaks, *num_systolic_peaks, fs_ecg);
 
@@ -2044,9 +2077,19 @@ double calculate_ptt(double ecg_signal[], double ppg_signal[], int ecg_len, int 
     // printf("BP: %d, max: %d, min: %d, sum_ptt: %f\n", bp, best_max_distance, best_min_distance, sum_ptt);
     // printf("BP: %d\n",bp);
     // print_new_lines();
+    int ppg_is_high = 0;
+    // if (greater_than_40 >= 1 || sum_ptt_ppg > 0.4)
+    if (greater_than_40 >= 1)
+    {
+        ppg_is_high = 1;
+    }
 
-    printf("BP: %d, sum_ptt_ppg: %.2f \n", bp, sum_ptt_ppg);
+    printf("BP: %d, sum_ptt_ppg: %.2f, ppg_is_high: %d \n", bp, sum_ptt_ppg, ppg_is_high);
+    for (int i = 0; i < 50; i++)
+    {
+        printf("*");
+    }
+    printf("\n");
 
-    double ppg_is_high = 1;
     return sum_ptt_ppg;
 }

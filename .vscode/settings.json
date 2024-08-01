@@ -1,7 +1,8 @@
 {
-    "files.associations": {
-        "time.h": "c",
-        "stdlib.h": "c",
-        "atomic": "c"
-    }
+  "files.associations": {
+    "time.h": "c",
+    "stdlib.h": "c",
+    "atomic": "c",
+    "limits": "c"
+  }
 }
